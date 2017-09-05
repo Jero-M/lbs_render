@@ -1,0 +1,4 @@
+*.ui
+*.pyc
+etc/
+database/
