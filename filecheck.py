@@ -53,3 +53,4 @@ if __name__ == "__main__":
     basename = ifd.basename
     filename = ifd.filename
     print directory
+    #test
