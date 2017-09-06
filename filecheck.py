@@ -15,13 +15,12 @@ class RenderFile(object):
         self.render_file = file_path
         self.directory = self.get_directory(self.render_file)
         self.basename = self.get_basename(self.render_file)
-        self.compression = ""
-        self.filename = ""
-        self.extension = ""
-        self.seq_partition = ""
+        self.compression = self.get_compression(self.basename)
+        self.extension = self.get_extension(self.basename)        
+        self.filename = self.get_filename(self.basename)
+        self.seq_number = ""
         self.filename_no_seq = ""
         self.padding = ""
-        self.seq_number = ""
 
     def get_directory(self, file_path):
         '''Return the path of a files directory'''
@@ -34,23 +33,37 @@ class RenderFile(object):
     def get_compression(self, basename):
         '''Return the compression of the basename'''
         compression = basename.rpartition(".")[-1]
-        if compression == 
-
-    def get_filename(self, basename):
-        #Return the file name of a basename. Only the name without the extension
-        return basename.rpartition(".")[0]
+        if compression not in self.settings.compression:
+            return None
+        else:
+            return compression
 
     def get_extension(self, basename):
-        #Return the extension of a basename
-        return basename.rpartition(".")[-1]
+        '''Return the extension of a basename'''
+        if self.compression == None:
+            extension = basename.rpartition(".")[-1]
+        else:
+            extension = basename.split(".")[-2]
+        return extension
+
+    def get_filename(self, basename):
+        '''Return the file name of a basename.
+           Only the name without the extension
+        '''
+        filename = basename.rpartition(".")[0]
+        if self.compression == None:
+            return filename
+        else:
+            return filename.rpartition(".")[0]
 
 
 if __name__ == "__main__":
-    test_path = ("/lbs/staff/hip/FXTD_00X/Name/projects/project_name/renders/"
-                + "render_file_v001.0001.ifd.sc")
+    test_path = ("/LOSTBOYS/FX/STUDENTS/FXTD_00X/Name/projects/project_name/"
+                 + "renders/render_file_v001.0001.ifd.sc")
     ifd = RenderFile(test_path)
-    directory = ifd.directory
-    basename = ifd.basename
-    filename = ifd.filename
-    print directory
-    #testasas
+    print "Directory:", ifd.directory
+    print "Basename:", ifd.basename
+    print "Compression:", ifd.compression
+    print "Extension:", ifd.extension
+    print "Filename:", ifd.filename
+
