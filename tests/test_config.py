@@ -126,6 +126,11 @@ class TestConfig(unittest.TestCase):
         extensions = "*.ifd, *.gz, *.sc"
         self.assertEqual(extensions, self.settings.ifd_extensions)
 
+    def test_ifd_compression(self):
+        '''Test the compressions are valid'''
+        extensions = ["gz", "sc"]
+        self.assertEqual(extensions, self.settings.compression)
+
     def test_reload_file(self):
         '''Test if reloading the config file reloads the file paths'''
         self.settings.open_config_file(test_path + "/tests/config_file_test")
@@ -161,5 +166,3 @@ class TestConfig(unittest.TestCase):
 
 
 unittest.main()
-
-#Test compression and ifd extensions

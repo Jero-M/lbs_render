@@ -16,12 +16,11 @@ class RenderFile(object):
         self.directory = self.get_directory(self.render_file)
         self.basename = self.get_basename(self.render_file)
         self.compression = self.get_compression(self.basename)
-        self.filename = ""
-        self.extension = ""
-        self.seq_partition = ""
+        self.extension = self.get_extension(self.basename)        
+        self.filename = self.get_filename(self.basename)
+        self.seq_number = ""
         self.filename_no_seq = ""
         self.padding = ""
-        self.seq_number = ""
 
     def get_directory(self, file_path):
         '''Return the path of a files directory'''
@@ -34,15 +33,28 @@ class RenderFile(object):
     def get_compression(self, basename):
         '''Return the compression of the basename'''
         compression = basename.rpartition(".")[-1]
-        return compression
-
-    def get_filename(self, basename):
-        #Return the file name of a basename. Only the name without the extension
-        return basename.rpartition(".")[0]
+        if compression not in self.settings.compression:
+            return None
+        else:
+            return compression
 
     def get_extension(self, basename):
-        #Return the extension of a basename
-        return basename.rpartition(".")[-1]
+        '''Return the extension of a basename'''
+        if self.compression == None:
+            extension = basename.rpartition(".")[-1]
+        else:
+            extension = basename.split(".")[-2]
+        return extension
+
+    def get_filename(self, basename):
+        '''Return the file name of a basename.
+           Only the name without the extension
+        '''
+        filename = basename.rpartition(".")[0]
+        if self.compression == None:
+            return filename
+        else:
+            return filename.rpartition(".")[0]
 
 
 if __name__ == "__main__":
@@ -51,6 +63,7 @@ if __name__ == "__main__":
     ifd = RenderFile(test_path)
     print "Directory:", ifd.directory
     print "Basename:", ifd.basename
-    print "Filename:", ifd.filename
     print "Compression:", ifd.compression
+    print "Extension:", ifd.extension
+    print "Filename:", ifd.filename
 
