@@ -35,22 +35,6 @@ class TestConfig(unittest.TestCase):
             contents = config.readlines()
         self.assertEqual(contents, self.settings.config_list)
 
-    def test_users_file(self):
-        '''Test the users file is valid'''
-        path = test_path + "/etc/users"
-        self.assertEqual(path, self.settings.users_file)
-
-    def test_users_file_exists(self):
-        '''Test the users file exists'''
-        self.assertTrue(os.path.isfile(self.settings.users_file))
-
-    def test_users(self):
-        '''Test the users match the users from the file'''
-        users = []
-        with open(test_path + "/etc/users", "rb") as users_file:
-            users = users_file.readlines()
-        self.assertEqual(users, self.settings.users_list)
-
     def test_clients_file(self):
         '''Test the clients file is valid'''
         path = test_path + "/etc/clients.csv"
@@ -91,7 +75,7 @@ class TestConfig(unittest.TestCase):
 
     def test_houdini_dir(self):
         '''Test the houdini dir is valid'''
-        path = "/opt"
+        path = "/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE"
         self.assertEqual(path, self.settings.houdini_dir)
 
     def test_houdini_versions(self):
@@ -108,7 +92,7 @@ class TestConfig(unittest.TestCase):
 
     def test_mantra_path(self):
         '''Test the mantra path is valid'''
-        path = "/opt/$HOU_VERSION$/bin/mantra"
+        path = "/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/$HOU_VERSION$/bin/mantra"
         self.assertEqual(path, self.settings.mantra_path)
 
     def test_mantra_paths_exist(self):
@@ -130,7 +114,7 @@ class TestConfig(unittest.TestCase):
 
     def test_default_dir(self):
         '''Test the default directory is valid'''
-        path = "/lbs/staff/hip"
+        path = "/LOSTBOYS/FX/STUDENTS"
         self.assertEqual(path, self.settings.default_dir)
 
     def test_default_dir_exists(self):
@@ -148,8 +132,6 @@ class TestConfig(unittest.TestCase):
         self.settings.reload_files()
         self.assertEqual(self.settings.clients_file, test_path
                          + "/tests/clients_file_test.csv")
-        self.assertEqual(self.settings.users_file, test_path
-                         + "/tests/users_file_test")
 
     def test_reload_clients(self):
         '''Test if reloading clients updates the clients list'''
@@ -177,15 +159,7 @@ class TestConfig(unittest.TestCase):
                 mapping[row[0]] = row[1]
         self.assertEqual(mapping, self.settings.student_mapping)
 
-    def test_reload_users(self):
-        '''Test if reloading users updates the users list'''
-        self.settings.open_config_file(test_path + "/tests/config_file_test")
-        self.settings.reload_files()
-        users = []
-        with open(test_path
-                  + "/tests/users_file_test", "rb") as users_file:
-            users = users_file.readlines()
-        self.assertEqual(users, self.settings.users_list)
-
 
 unittest.main()
+
+#Test compression and ifd extensions

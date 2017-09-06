@@ -19,9 +19,7 @@ class Settings(object):
             self.config_file = config_file
         self.config_list = []
         self.open_config_file(self.config_file)
-        self.users_file = self.get_abs_path(self.load_setting("All Users"))
-        self.users_list = self.load_users(self.users_file)
-        self.user = self.get_user()
+        self.user = getpass.getuser()
         self.clients_file = self.get_abs_path(self.load_setting("All Clients"))
         self.clients = self.load_clients(self.clients_file)
         self.student_mapping = self.load_student_mapping(self.clients_file)
@@ -42,6 +40,7 @@ class Settings(object):
                             self.load_setting("Default Directory"))
         self.ifd_extensions = self.get_ifd_extensions(
                                self.load_setting("IFD File Extensions"))
+        self.compression = self.get_compression(self.ifd_extensions)
         self.debug_level = self.get_default_ui_values("Debug")
         self.ignore_host = self.get_default_ui_values("Ignore Host Username")
         self.default_steps = self.get_default_ui_values("Steps")
@@ -98,41 +97,22 @@ class Settings(object):
             for i, row in enumerate(reader):
                 if i == 0: continue
                 student_mapping[row[0]] = row[1]
-        return student_mapping
-
-    def load_users(self, file_path):
-        '''Load the list of network users from the users file'''
-        users = []
-        try:
-            with open(file_path, "rb") as users_file:
-                users = users_file.readlines()
-        except Exception as e:
-            print ("Error loading the users from file"
-                  + "{0}. Error: {1}".format(file_path, e))
-            return users
-        else:
-            return users     
+        return student_mapping   
 
     def reload_files(self):
         '''Reload users, clients and mapping files'''
-        self.users_file = self.get_abs_path(self.load_setting("All Users"))
-        self.users_list = self.load_users(self.users_file)
         self.clients_file = self.get_abs_path(self.load_setting("All Clients"))
         self.clients = self.load_clients(self.clients_file)
         self.student_mapping = self.load_student_mapping(self.clients_file)
 
     def get_houdini_versions(self, versions):
         '''Return a list with the path of the houdini versions'''
-        version_list = []
-        for version in versions.split(","):
-            version_list.append(version.strip())
+        version_list = [version.strip() for version in versions.split(",")]
         return version_list
 
     def formatted_versions(self, versions):
         '''Remove hfs from the version name for nicer displaying'''
-        formatted = []
-        for version in versions:
-            formatted.append(version.replace("hfs", "").strip())
+        formatted = [version.replace("hfs", "").strip() for version in versions]
         return formatted
 
     def get_default_dir(self, dir_path):
@@ -145,26 +125,20 @@ class Settings(object):
         return new_path
 
     def get_ifd_extensions(self, filters):
-        '''Return the properly formatted string of valid extensions'''
-        filter_list = filters.split(",")
-        filter_string = []
-        for ext_filter in filter_list:
-            filter_string.append("*." + ext_filter.strip())
+        '''Return the properly formatted string of valid extensions for QT'''
+        filter_string = ["*." + ext_filter.strip() for ext_filter in
+                         filters.split(",")]
         return ", ".join(filter_string)
+
+    def get_compression(self, extensions):
+        '''Return a list of valid compression extensions'''
+        compression = [ext.partition(".")[-1] for ext in extensions.split(",")
+                      if "ifd" not in ext]
+        return compression
 
     def get_default_ui_values(self, ui_setting):
         '''Return the default int value for the UI controls'''
         return int(self.load_setting(ui_setting))
-
-    def get_user(self):
-        '''Get the name of the current user'''
-        user = getpass.getuser()
-        if user != "fxtd" and user != "comp" and user != "lbsstaff":
-            raise ValueError ("Could not identify user")
-        if user == "lbsstaff":
-            return "staff"
-        else:
-            return user
 
     def get_abs_path(self, path):
         '''Return an absolute path from a relative path'''
@@ -199,13 +173,15 @@ if __name__ == "__main__":
         except:
             print client
     print "-----------------------"
-    print "RENDER DATABASE"
-    print render_database
+    print "RENDER DATABASE:", render_database
     print "-----------------------"
-    print ("HOUDINI INSTALL DIRECTORY:", houdini_dir,
-           "\n-----------------------")
-    print ("HOUDINI VERSIONS:", ", ".join(houdini_versions),
-           "\n-----------------------")
-    print "MANTRA PATH:", mantra_dir, "\n-----------------------" 
-    print settings.ifd_extensions   
+    print ("HOUDINI INSTALL DIRECTORY: " + houdini_dir
+           + "\n-----------------------")
+    print ("HOUDINI VERSIONS: " + ", ".join(houdini_versions)
+           + "\n-----------------------")
+    print "MANTRA PATH: " + mantra_dir + "\n-----------------------" 
+    print "IFD EXTENSIONS:", settings.ifd_extensions 
+    print "-----------------------"  
+    print "IFD COMPRESSION:", settings.compression
+    print "-----------------------"  
     sys.exit()

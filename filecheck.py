@@ -15,7 +15,7 @@ class RenderFile(object):
         self.render_file = file_path
         self.directory = self.get_directory(self.render_file)
         self.basename = self.get_basename(self.render_file)
-        self.compression = ""
+        self.compression = self.get_compression(self.basename)
         self.filename = ""
         self.extension = ""
         self.seq_partition = ""
@@ -34,7 +34,7 @@ class RenderFile(object):
     def get_compression(self, basename):
         '''Return the compression of the basename'''
         compression = basename.rpartition(".")[-1]
-        if compression == 
+        return compression
 
     def get_filename(self, basename):
         #Return the file name of a basename. Only the name without the extension
@@ -46,11 +46,11 @@ class RenderFile(object):
 
 
 if __name__ == "__main__":
-    test_path = ("/lbs/staff/hip/FXTD_00X/Name/projects/project_name/renders/"
-                + "render_file_v001.0001.ifd.sc")
+    test_path = ("/LOSTBOYS/FX/STUDENTS/FXTD_00X/Name/projects/project_name/"
+                 + "renders/render_file_v001.0001.ifd.sc")
     ifd = RenderFile(test_path)
-    directory = ifd.directory
-    basename = ifd.basename
-    filename = ifd.filename
-    print directory
-    #testasas
+    print "Directory:", ifd.directory
+    print "Basename:", ifd.basename
+    print "Filename:", ifd.filename
+    print "Compression:", ifd.compression
+
