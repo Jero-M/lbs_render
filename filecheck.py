@@ -7,7 +7,7 @@ import config
 
 
 class RenderFile(object):
-    '''Create a render file object and check all of its properties'''
+    '''Create a render file object and gather all of its properties'''
 
     def __init__(self, file_path):
         '''Initialize the file object'''
@@ -68,6 +68,8 @@ class RenderFile(object):
         for content in dir_contents:
             if content.contains(basename):
                 return content
+        else:
+            return pyseq.Sequence([basename])
 
     def determine_if_seq(self, seq):
         '''Check if the sequence object is a sequence or a single file'''
@@ -78,8 +80,8 @@ class RenderFile(object):
 
 
 if __name__ == "__main__":
-    test_path = ("/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_test/"
-                 + "pig_v001.0001.ifd")
+    project_path = os.path.dirname(os.path.realpath(__file__))
+    test_path = (project_path + "/tests/img_seqs/pig_v001.0002.ifd")
     ifd = RenderFile(test_path)
     print "Directory:", ifd.directory
     print "Basename:", ifd.basename

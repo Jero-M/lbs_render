@@ -4,6 +4,8 @@
 *.gz
 *.sc
 *.exr
+*.hip
+*.hipnc
 tests/img_seqs
 etc/
 database/
