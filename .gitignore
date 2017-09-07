@@ -1,4 +1,9 @@
 *.ui
 *.pyc
+*.ifd
+*.gz
+*.sc
+*.exr
+tests/img_seqs
 etc/
 database/

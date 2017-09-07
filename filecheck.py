@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import os
-import getpass
-import sys
+
+import pyseq
 
 import config
 
@@ -18,9 +18,15 @@ class RenderFile(object):
         self.compression = self.get_compression(self.basename)
         self.extension = self.get_extension(self.basename)        
         self.filename = self.get_filename(self.basename)
-        self.seq_number = ""
-        self.filename_no_seq = ""
-        self.padding = ""
+        self.seq_obj = self.get_seq_object(self.directory, self.basename)
+        self.seq_files = [obj.name for obj in self.seq_obj]
+        self.is_seq = self.determine_if_seq(self.seq_obj)
+        self.filename_head = self.seq_obj.head()
+        self.seq_length = self.seq_obj.length()
+        self.seq_frames = self.seq_obj.frames()
+        self.start_frame = self.seq_obj.start()
+        self.end_frame = self.seq_obj.end()
+        self.seq_padding = self.seq_obj.format("%p")
 
     def get_directory(self, file_path):
         '''Return the path of a files directory'''
@@ -56,14 +62,36 @@ class RenderFile(object):
         else:
             return filename.rpartition(".")[0]
 
+    def get_seq_object(self, path, basename):
+        '''Check the directory for sequences and returns a sequence object'''
+        dir_contents = pyseq.get_sequences(path)
+        for content in dir_contents:
+            if content.contains(basename):
+                return content
+
+    def determine_if_seq(self, seq):
+        '''Check if the sequence object is a sequence or a single file'''
+        if seq.length() > 1:
+            return True
+        else:
+            return False
+
 
 if __name__ == "__main__":
-    test_path = ("/LOSTBOYS/FX/STUDENTS/FXTD_00X/Name/projects/project_name/"
-                 + "renders/render_file_v001.0001.ifd.sc")
+    test_path = ("/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_test/"
+                 + "pig_v001.0001.ifd")
     ifd = RenderFile(test_path)
     print "Directory:", ifd.directory
     print "Basename:", ifd.basename
     print "Compression:", ifd.compression
     print "Extension:", ifd.extension
     print "Filename:", ifd.filename
-
+    print "Sequence Object:", ifd.seq_obj.format("%h%p%t%R")
+    print "Is Sequence:", ifd.is_seq
+    print "Render items:", ifd.seq_files
+    print "Sequence Head:", ifd.filename_head
+    print "Sequence Length:", ifd.seq_length
+    print "Sequence Frames:", ifd.seq_frames
+    print "Start Frame:", ifd.start_frame
+    print "End Frame:", ifd.end_frame
+    print "Sequence Padding:", ifd.seq_padding
