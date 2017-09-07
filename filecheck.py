@@ -14,6 +14,7 @@ class RenderFile(object):
         self.settings = config.Settings()
         self.render_file = file_path
         self.directory = self.get_directory(self.render_file)
+        self.ifd_user = self.get_ifd_user(self.directory)
         self.basename = self.get_basename(self.render_file)
         self.compression = self.get_compression(self.basename)
         self.extension = self.get_extension(self.basename)        
@@ -31,6 +32,10 @@ class RenderFile(object):
     def get_directory(self, file_path):
         '''Return the path of a files directory'''
         return os.path.dirname(os.path.realpath(file_path))
+
+    def get_ifd_user(self, dir):
+        '''Based on the directory of the file, get the name of the user'''
+        return dir.split("/")[5]
 
     def get_basename(self, file_path):
         '''Return the basename of a file path. basename = name + extension'''
@@ -84,6 +89,7 @@ if __name__ == "__main__":
     test_path = (project_path + "/tests/img_seqs/pig_v001.0002.ifd")
     ifd = RenderFile(test_path)
     print "Directory:", ifd.directory
+    print "IFD User:", ifd.ifd_user
     print "Basename:", ifd.basename
     print "Compression:", ifd.compression
     print "Extension:", ifd.extension
