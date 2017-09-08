@@ -9,6 +9,28 @@ sys.path.insert(0, test_path)
 
 import config
 
+config_data = ["All Clients = ./etc/clients.csv",
+               "Render Database = ./database/render_clients.csv",
+               "Houdini Install Directory = /LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE",
+               "Houdini Versions = hfs16.0, hfs15.0.313",
+               "Mantra Path = $HOU_INSTALL$/$HOU_VERSION$/bin/mantra",
+               "Render Client UI = ./render_client_ui.py",
+               "Canceled Render UI = ./canceled_render_ui.py",
+               "Default Directory = /LOSTBOYS/FX/STUDENTS",
+               "IFD File Extensions = ifd, gz, sc",
+               "Debug = 0",
+               "Ignore Host Username = 1",
+               "Steps = 1",
+               "Processors = 0",
+               "Verbose = 2",
+               "VEX Profiling = 0",
+               "NAN Detection = 0",
+               "Alfred Style = 1",
+               "Time Stamps = 0",
+               "Verbosity Off = 0",
+               "Delete IFDs = 1",
+              ]
+
 class TestConfig(unittest.TestCase):
     '''Test the config module'''
 
@@ -123,7 +145,7 @@ class TestConfig(unittest.TestCase):
 
     def test_ifd_extensions(self):
         '''Test the ifd extensions are valid'''
-        extensions = "*.ifd, *.gz, *.sc"
+        extensions = "*.ifd *.gz *.sc"
         self.assertEqual(extensions, self.settings.ifd_extensions)
 
     def test_ifd_compression(self):

@@ -22,23 +22,28 @@ class TestRenderFileCheck(unittest.TestCase):
     '''Tests for the filecheck.RenderFile class'''
 
     def setUp(self):
-        '''Create a RenderFile object from the test file'''
+        '''Create a RenderFile object from the test files'''
         self.case1 = RenderFile(test_dir + test_files[0])
         self.case2 = RenderFile(test_dir + test_files[1])
         self.case3 = RenderFile(test_dir + test_files[2])
         self.case4 = RenderFile(test_dir + test_files[3])
         self.case5 = RenderFile(test_dir + test_files[4])
         self.case6 = RenderFile(test_dir + test_files[5])
+        self.case_list = [self.case1, self.case2, self.case3, self.case4,
+                          self.case5, self.case6]
 
     def test_directory(self):
         '''Test the directory attribute matches the test file dir'''
-        self.assertEqual(test_dir, self.case1.directory)
+        for case in self.case_list:
+            self.assertEqual(test_dir, case.directory,
+                             msg="{0} failed".format(case.basename))
 
-    # def test_get_directory(self):
-    #     '''Test get directory method matches the test file dir'''
-    #     compare_dir = str("/lbs/staff/hip/FXTD_00X/Name/projects/project_name"
-    #                     + "/renders")
-    #     self.assertEqual(compare_dir, self.ifd.get_directory(self.test_file))
+    def test_get_directory(self):
+        '''Test get directory method matches the test file dir'''
+        for i, case in enumerate(self.case_list):
+            path = test_dir  + test_files[i]
+            self.assertEqual(test_dir, case.get_directory(path),
+                            msg="{0} failed".format(case.basename))
 
     # def test_basename(self):
     #     '''Test the basename attribute matches the test file basename'''

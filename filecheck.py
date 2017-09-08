@@ -22,13 +22,13 @@ class RenderFile(object):
         self.seq_obj = self.get_seq_object(self.directory, self.basename)
         self.seq_files = [obj.name for obj in self.seq_obj]
         self.is_seq = self.determine_if_seq(self.seq_obj)
-        self.filename_head = self.seq_obj.head()
+        self.filename_head = self.get_filename_head(self.is_seq, self.seq_obj)
         self.seq_length = self.seq_obj.length()
-        self.seq_frames = self.seq_obj.frames()
-        self.start_frame = self.seq_obj.start()
-        self.end_frame = self.seq_obj.end()
-        self.seq_padding = self.seq_obj.format("%p")
-
+        self.seq_frames = self.get_seq_frames(self.is_seq, self.seq_obj)
+        self.start_frame = self.get_start_frame(self.is_seq, self.seq_obj)
+        self.end_frame = self.get_end_frame(self.is_seq, self.seq_obj)
+        self.seq_padding = self.get_padding(self.is_seq, self.seq_obj)
+        
     def get_directory(self, file_path):
         '''Return the path of a files directory'''
         return os.path.dirname(os.path.realpath(file_path))
@@ -83,10 +83,45 @@ class RenderFile(object):
         else:
             return False
 
+    def get_filename_head(self, is_seq, seq):
+        '''Return the string ahead of the sequence number'''
+        if is_seq:
+            return seq.head()
+        else:
+            return seq.name.rpartition(".")[0]
+
+    def get_seq_frames(self, is_seq, seq):
+        '''Return a list of the frame numbers in the seq'''
+        if is_seq:
+            return seq.frames()
+        else:
+            return [1]
+
+    def get_start_frame(self, is_seq, seq):
+        '''Return the first frame of the sequence'''
+        if is_seq:
+            return seq.start()
+        else:
+            return 1
+
+    def get_end_frame(self, is_seq, seq):
+        '''Return the last frame of the sequence'''
+        if is_seq:
+            return seq.end()
+        else:
+            return 1
+
+    def get_padding(self, is_seq, seq):
+        '''Return the padding of the sequence'''
+        if is_seq:
+            return seq.format("%p")
+        else:
+            return 0
+
 
 if __name__ == "__main__":
     project_path = os.path.dirname(os.path.realpath(__file__))
-    test_path = (project_path + "/tests/img_seqs/pig_v001.0002.ifd")
+    test_path = (project_path + "/tests/img_seqs/pig_v002_fxtd.0006.ifd.sc")
     ifd = RenderFile(test_path)
     print "Directory:", ifd.directory
     print "IFD User:", ifd.ifd_user
