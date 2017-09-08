@@ -53,6 +53,7 @@ def main():
 
     # Settings Variables
     default_fd_dir = settings.default_dir
+    default_fd_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs"
     ignore_host_name = settings.ignore_host
     file_filters = settings.ifd_extensions
 
@@ -96,7 +97,6 @@ if __name__ == "__main__":
 
 - IFD File Entry -
 1 - Event call when entry is changed
-2 - Get IFD info (user, length, etc)
 
 - Render -
 1 - Check for file integrity

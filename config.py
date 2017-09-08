@@ -128,11 +128,11 @@ class Settings(object):
         '''Return the properly formatted string of valid extensions for QT'''
         filter_string = ["*." + ext_filter.strip() for ext_filter in
                          filters.split(",")]
-        return ", ".join(filter_string)
+        return " ".join(filter_string)
 
     def get_compression(self, extensions):
         '''Return a list of valid compression extensions'''
-        compression = [ext.partition(".")[-1] for ext in extensions.split(",")
+        compression = [ext.partition(".")[-1] for ext in extensions.split(" ")
                       if "ifd" not in ext]
         return compression
 

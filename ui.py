@@ -144,7 +144,7 @@ class StartUI(QtGui.QMainWindow):
             self.ui.file_path_entry.setText(self.filename)
 
     def test(self):
-        #check if file even exists before continuing
+        #check if file exists before continuing
         print "File changed"
 
     def enable_render(self):
@@ -228,8 +228,10 @@ class StartUI(QtGui.QMainWindow):
 
 
 if __name__ == "__main__":
+    import config
+    settings = config.Settings()
     app = QtGui.QApplication(sys.argv)
-    myapp = StartUI()
+    myapp = StartUI(settings.default_dir, settings.ifd_extensions)
     myapp.show()
     myapp.set_versions(["16.0", "15.3.03"])
     myapp.set_start_frame(0)
