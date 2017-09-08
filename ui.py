@@ -6,6 +6,7 @@ from qt_ui import Ui_renderTool
 from os.path import isfile
 
 import render_manager
+import filecheck
 
 
 ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
@@ -47,7 +48,7 @@ class StartUI(QtGui.QMainWindow):
                                self.update_tree_list)
         QtCore.QObject.connect(self.ui.file_path_entry,
                                QtCore.SIGNAL("textChanged(const QString&)"),
-                               self.test)
+                               self.verify_file_input)
 
         #Automatically load the database
         self.database_path = (os.path.dirname(os.path.realpath(__file__))
@@ -143,9 +144,16 @@ class StartUI(QtGui.QMainWindow):
         if isfile(self.filename):
             self.ui.file_path_entry.setText(self.filename)
 
-    def test(self):
-        #check if file exists before continuing
-        print "File changed"
+    def verify_file_input(self):
+        '''Check if file exists, run filecheck and update UI'''
+        file_entry = str(self.ui.file_path_entry.text())
+        if not os.path.isfile(file_entry):
+            print "File does not exist"
+            return
+        ifd_seq = filecheck.RenderFile(file_entry)
+        self.set_start_frame(ifd_seq.start_frame)
+        self.set_end_frame(ifd_seq.end_frame)
+        self.enable_render()
 
     def enable_render(self):
         '''Enable the render button'''
