@@ -17,7 +17,7 @@ ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
 class StartUI(QtGui.QMainWindow):
     '''Build an instance of the GUI'''
 
-    def __init__(self, default_dir, file_filters, parent=None):
+    def __init__(self, database, default_dir, file_filters, parent=None):
         '''Initialize the interface with the correct settings'''
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_renderTool()
@@ -51,8 +51,7 @@ class StartUI(QtGui.QMainWindow):
                                self.verify_file_input)
 
         #Automatically load the database
-        self.database_path = (os.path.dirname(os.path.realpath(__file__))
-                             + "/database/render_clients.csv")
+        self.database_path = database
         self.watcher.addPath(self.database_path)
         self.create_tree_list()
 
@@ -239,7 +238,8 @@ if __name__ == "__main__":
     import config
     settings = config.Settings()
     app = QtGui.QApplication(sys.argv)
-    myapp = StartUI(settings.default_dir, settings.ifd_extensions)
+    myapp = StartUI(settings.render_database_file,
+                    settings.default_dir, settings.ifd_extensions)
     myapp.show()
     myapp.set_versions(["16.0", "15.3.03"])
     myapp.set_start_frame(0)

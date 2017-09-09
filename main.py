@@ -68,7 +68,7 @@ def main():
 
     # Create the GUI
     application = QtGui.QApplication(sys.argv)
-    gui = ui.StartUI(default_fd_dir, file_filters)
+    gui = ui.StartUI(settings.render_database_file, default_fd_dir, file_filters)
     load_default_ui_settings(gui, settings)
 
     # Show the GUI
@@ -95,9 +95,6 @@ if __name__ == "__main__":
 1 - Errors
 2 - Uploading config file updates everything
 
-- IFD File Entry -
-1 - Event call when entry is changed
-
 - Render -
 1 - Check for file integrity
 
@@ -112,4 +109,20 @@ if __name__ == "__main__":
 
 - Extra -
 1 - Drag and drop
+
+If a client is disabled, the selection should be unchecked
+
+1- Click Render
+    a- Render callback function
+      i- Gather all settings
+      ii- Check if IFD Exists
+      iii- Check if user is allowed to render
+      iv- Gather selected clients
+      v- Update render database to reserve clients
+      vi- Divide frames per amount of clients
+      vii- Start process for every client
+      viii- SSH Into client
+Query selected nodes
+- 
+
 '''

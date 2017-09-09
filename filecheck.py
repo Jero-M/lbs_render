@@ -28,7 +28,7 @@ class RenderFile(object):
         self.start_frame = self.get_start_frame(self.is_seq, self.seq_obj)
         self.end_frame = self.get_end_frame(self.is_seq, self.seq_obj)
         self.seq_padding = self.get_padding(self.is_seq, self.seq_obj)
-        
+
     def get_directory(self, file_path):
         '''Return the path of a files directory'''
         return os.path.dirname(os.path.realpath(file_path))
@@ -121,7 +121,7 @@ class RenderFile(object):
 
 if __name__ == "__main__":
     project_path = os.path.dirname(os.path.realpath(__file__))
-    test_path = (project_path + "/tests/img_seqs/pig_v002_fxtd.0006.ifd.sc")
+    test_path = (project_path + "/tests/img_seqs/pig_v002_fxtd.0010.ifd.sc")
     ifd = RenderFile(test_path)
     print "Directory:", ifd.directory
     print "IFD User:", ifd.ifd_user
