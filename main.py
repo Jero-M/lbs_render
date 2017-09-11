@@ -121,7 +121,8 @@ If a client is disabled, the selection should be unchecked
       v- Update render database to reserve clients
       vi- Divide frames per amount of clients
       vii- Start process for every client
-      viii- SSH Into client
+      viii- SSH into client
+      
 Query selected nodes
 - 
 

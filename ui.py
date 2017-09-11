@@ -103,6 +103,7 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 5, "grey")
             self.change_text_color(row, 6, "grey")
             row.setDisabled(True)
+            #Uncheck select box
         elif status == "Available":
             self.change_text_color(row, 0, "black")
             self.change_text_color(row, 1, "green")
