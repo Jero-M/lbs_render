@@ -102,15 +102,16 @@ class TestConfig(unittest.TestCase):
 
     def test_houdini_versions(self):
         '''Test the houdini versions'''
-        versions = ["hfs16.0", "hfs15.0.313"]
+        versions = ["16.0", "15.0.313"]
         for version in versions:
             self.assertIn(version, self.settings.houdini_versions)
 
-    def test_get_formatted_versions(self):
-        '''Test if the versions are formatted nicely for printing'''
-        formatted_versions = ["16.0", "15.0.313"]
-        self.assertEqual(formatted_versions, self.settings.formatted_versions(
-                                              self.settings.houdini_versions))
+    def test_formatted_version(self):
+        '''Test if the version is formatted nicely for printing'''
+        non_formatted_versions = self.settings.houdini_versions.values()
+        for version in non_formatted_versions:
+            self.assertTrue(self.settings.formatted_version(version)
+                            in self.settings.houdini_versions)
 
     def test_mantra_path(self):
         '''Test the mantra path is valid'''
@@ -119,10 +120,10 @@ class TestConfig(unittest.TestCase):
 
     def test_mantra_paths_exist(self):
         '''Test that the Mantra path exists for every version'''
-        for version in self.settings.houdini_versions:
+        for version in self.settings.houdini_versions.keys():
             self.assertTrue(os.path.isfile(
                             self.settings.mantra_path.replace("$HOU_VERSION$",
-                                                              version)))
+                                    self.settings.houdini_versions[version])))
 
     def test_render_client_ui(self):
         '''Test the render client ui location is valid'''

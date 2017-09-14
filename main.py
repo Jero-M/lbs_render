@@ -89,7 +89,7 @@ if __name__ == "__main__":
 6 - Disable Stop button if status is available
 
 - UI -
-
+- Have errors display on a pop-up window
 
 - Main -
 1 - Errors

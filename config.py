@@ -29,9 +29,8 @@ class Settings(object):
                             self.load_setting("Houdini Install Directory"))
         self.houdini_versions = self.get_houdini_versions(
                                  self.load_setting("Houdini Versions"))
-        self.mantra_path = self.get_mantra_path(
-                            self.load_setting("Mantra Path"), self.houdini_dir,
-                                              self.houdini_versions[0])
+        self.mantra_path = self.get_mantra_path(self.load_setting("Mantra Path"),
+                                                self.houdini_dir)
         self.render_client_ui = self.get_abs_path(
                                  self.load_setting("Render Client UI"))
         self.canceled_ui = self.get_abs_path(
@@ -107,19 +106,19 @@ class Settings(object):
 
     def get_houdini_versions(self, versions):
         '''Return a list with the path of the houdini versions'''
-        version_list = [version.strip() for version in versions.split(",")]
+        version_list = {self.formatted_version(version.strip()):version.strip()
+                        for version in versions.split(",")}
         return version_list
 
-    def formatted_versions(self, versions):
+    def formatted_version(self, version):
         '''Remove hfs from the version name for nicer displaying'''
-        formatted = [version.replace("hfs", "").strip() for version in versions]
-        return formatted
+        return version.replace("hfs", "").strip()
 
     def get_default_dir(self, dir_path):
         '''Get the path to the default directory of the file dialog'''
         return dir_path.replace("$USER$", self.user)
 
-    def get_mantra_path(self, path, hou_dir, hou_version):
+    def get_mantra_path(self, path, hou_dir):
         '''Return the path to Mantra from the current houdini version'''
         new_path = path.replace("$HOU_INSTALL$", hou_dir)
         return new_path
@@ -183,5 +182,5 @@ if __name__ == "__main__":
     print "IFD EXTENSIONS:", settings.ifd_extensions 
     print "-----------------------"  
     print "IFD COMPRESSION:", settings.compression
-    print "-----------------------"  
+    print "-----------------------"
     sys.exit()
