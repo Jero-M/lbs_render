@@ -135,7 +135,17 @@ Query selected nodes
 - Generate a known hosts file using every host
 - Copy the known hosts to /etc/ssh/ssh_known_hosts in every network host
   - Having it in /etc/ makes it global for all users in the computer as opposed to having it in the users home dir
+- Any changes made to the config of ssh inside /etc requires the ssh rervice to be restarted
+  - sudo /etc/init.d/ssh restart
 - Generate a pair of keys for every user? Or share the same keys
-- Create authorized keys
+  - ssh-keygen
+  - This will save the keys in /home/.ssh as id_rsa.pub and id_rsa
+- Create authorized keys by copying the ssh key to the server
+  - ssh-copy-id username@host
+  - The contents of id_rsa.pub will be added to /home/.ssh/authorized_keys
+- ssh-add might need to be used if an ssh-agent is already running but can't find keys attached
+  - sign_and_send_pubkey: signing failed: agent refused operation
+    - Query fingerprints using ssh-add -l
+- Copy the authorized keys and private and public keys to every users /home/.ssh dir
 
 '''
