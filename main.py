@@ -126,4 +126,16 @@ If a client is disabled, the selection should be unchecked
 Query selected nodes
 - 
 
+- SSH Config -
+- Get all network hosts and query their sshd_config
+- Check if SSH Config has any allowed users. If it does, raise a warning
+  - Give 2 options:
+    - Ignore
+    - Replace the SSH Config  of the bad users for an allowed one
+- Generate a known hosts file using every host
+- Copy the known hosts to /etc/ssh/ssh_known_hosts in every network host
+  - Having it in /etc/ makes it global for all users in the computer as opposed to having it in the users home dir
+- Generate a pair of keys for every user? Or share the same keys
+- Create authorized keys
+
 '''

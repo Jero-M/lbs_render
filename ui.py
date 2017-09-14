@@ -43,6 +43,9 @@ class StartUI(QtGui.QMainWindow):
         QtCore.QObject.connect(self.ui.browse_button,
                                QtCore.SIGNAL("clicked()"),
                                self.file_dialog)
+        QtCore.QObject.connect(self.ui.render_button,
+                               QtCore.SIGNAL("clicked()"),
+                               self.gather_render_data)
         QtCore.QObject.connect(self.watcher,
                                QtCore.SIGNAL("fileChanged(const QString&)"),
                                self.update_tree_list)
@@ -148,12 +151,23 @@ class StartUI(QtGui.QMainWindow):
         '''Check if file exists, run filecheck and update UI'''
         file_entry = str(self.ui.file_path_entry.text())
         if not os.path.isfile(file_entry):
+            self.disable_render()
             print "File does not exist"
             return
         ifd_seq = filecheck.RenderFile(file_entry)
         self.set_start_frame(ifd_seq.start_frame)
         self.set_end_frame(ifd_seq.end_frame)
         self.enable_render()
+
+    def gather_render_data(self):
+        '''Gather all the data from the UI and if valid begin rendering'''
+        file_entry = str(self.ui.file_path_entry.text())
+        if not os.path.isfile(file_entry):
+            self.disable_render()
+            print "File does not exist"
+            return
+        ui_settings = self.get_all_settings()
+        print ui_settings
 
     def enable_render(self):
         '''Enable the render button'''
