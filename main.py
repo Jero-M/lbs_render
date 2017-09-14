@@ -11,7 +11,7 @@ import ui
 
 def load_default_ui_settings(gui, settings):
     # Load the default UI settings from the config file
-    gui.set_versions(settings.formatted_versions(settings.houdini_versions))
+    gui.set_versions(sorted(settings.houdini_versions, reverse=True))
     gui.set_steps(settings.default_steps)
     gui.set_processors(settings.default_processors)
     gui.set_verbose(settings.default_verbose)
