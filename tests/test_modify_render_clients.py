@@ -26,7 +26,7 @@ def main():
     for x in range(10):
         test_db.busy(x)
         test_db.set_host(x, clients[x + 6])
-        test_db.set_ifd(x, "/lbs/staff/FXTD_008/Jeronimo/blah.ifd")
+        test_db.set_ifd(x, "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/blah.ifd")
         test_db.set_start_time(x, x)
         test_db.set_progress(x, x / 10.0)
     test_db.save_csv()

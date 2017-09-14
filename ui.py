@@ -161,12 +161,25 @@ class StartUI(QtGui.QMainWindow):
 
     def gather_render_data(self):
         '''Gather all the data from the UI and if valid begin rendering'''
+        #Check if file exists
         file_entry = str(self.ui.file_path_entry.text())
         if not os.path.isfile(file_entry):
             self.disable_render()
             print "File does not exist"
             return
+        #Gather UI Settings
         ui_settings = self.get_all_settings()
+        #Gather selected clients
+        # selected_clients = []
+        # for entry in self.render_list_ids:
+        #     tree_list = self.render_list_items[entry]
+        #     if tree_list.checkState(6):
+        #         selected_clients.append(tree_list.text(0))
+        selected_clients = [str(self.render_list_items[entry].text(0))
+                            for entry in self.render_list_ids
+                            if self.render_list_items[entry].checkState(6)]
+        print selected_clients
+        #Check if user is allowed
         print ui_settings
 
     def enable_render(self):

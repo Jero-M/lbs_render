@@ -94,6 +94,7 @@ if __name__ == "__main__":
 - Main -
 1 - Errors
 2 - Uploading config file updates everything
+3 - Update script for clients.csv and render_clients
 
 - Render -
 1 - Check for file integrity
