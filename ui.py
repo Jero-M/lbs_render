@@ -4,11 +4,10 @@ import os
 from PyQt4 import QtCore, QtGui
 from qt_ui import Ui_renderTool
 from os.path import isfile
-from math import floor
-from collections import deque
 
 import render_manager
 import filecheck
+import render
 
 
 ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
@@ -186,27 +185,18 @@ class StartUI(QtGui.QMainWindow):
         if len(selected_clients_ids) == 0:
             print "No clients selected"
             return
-            
+
         #Divide frames per clients
         #Create a list based on input start frame, end frames and step
         frame_range = range(int(self.ui.start_frame_entry.text()),
                              int(self.ui.end_frame_entry.text()) + 1,
                              int(self.ui.steps_entry.text()))
-        #Generate a dict with key:frame and value:filename with the correct
-        #sequence number
-        file_seq = {} 
-        for frame in frame_range:
-            file_seq[frame] = (self.ifd_seq.filename_head
-                              + str(self.ifd_seq.seq_padding % frame)
-                              + self.ifd_seq.filename_tail)
-        #Make a queue from the frames and loop through every client and assign
-        #one frame at a time until there are no frames left
-        frames_per_client = {client:[] for client in selected_clients_ids}
-        frames_queue = deque(frame_range)
-        for i, frame in enumerate(frame_range):
-            client_id = selected_clients_ids[i % len(selected_clients_ids)]
-            print client_id
-            frames_per_client[client_id].append(frames_queue.popleft())
+        frames_per_client = render.assign_frames_to_clients(
+                                                selected_clients_ids,
+                                                frame_range,
+                                                self.ifd_seq.filename_head,
+                                                self.ifd_seq.seq_padding,
+                                                self.ifd_seq.filename_tail)
 
         #Update Render Database
         self.render_db.open_csv(self.database_path)
@@ -216,7 +206,7 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.set_ifd(client, file_entry)
             self.render_db.set_start_time(client, 1)
             self.render_db.set_progress(client, 0)
-        self.render_db.save_csv()
+        # self.render_db.save_csv()
 
     def enable_render(self):
         '''Enable the render button'''
