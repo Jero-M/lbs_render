@@ -23,6 +23,7 @@ class RenderFile(object):
         self.seq_files = [obj.name for obj in self.seq_obj]
         self.is_seq = self.determine_if_seq(self.seq_obj)
         self.filename_head = self.get_filename_head(self.is_seq, self.seq_obj)
+        self.filename_tail = self.get_filename_tail(self.is_seq, self.seq_obj)
         self.seq_length = self.seq_obj.length()
         self.seq_frames = self.get_seq_frames(self.is_seq, self.seq_obj)
         self.start_frame = self.get_start_frame(self.is_seq, self.seq_obj)
@@ -89,6 +90,13 @@ class RenderFile(object):
             return seq.head()
         else:
             return seq.name.rpartition(".")[0]
+
+    def get_filename_tail(self, is_seq, seq):
+        '''Return the string behind of the sequence number'''
+        if is_seq:
+            return seq.tail()
+        else:
+            return seq.name.rpartition(".")[-1]
 
     def get_seq_frames(self, is_seq, seq):
         '''Return a list of the frame numbers in the seq'''

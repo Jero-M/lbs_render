@@ -88,6 +88,7 @@ if __name__ == "__main__":
 4 - Make Stop button call a function
 5 - Disable Stop button based on host
 6 - Disable Stop button if status is available
+7 - Add frames list
 
 - UI -
 - Have errors display on a pop-up window
@@ -121,8 +122,8 @@ UNLESS THE HOST IS RENDERING THERE
       ii- Check if IFD Exists
       iii- Gather all settings
       iv- Gather selected clients
-      v- Update render database to reserve clients
-      vi- Divide frames per amount of clients
+      v- Divide frames per amount of clients
+      vi- Update render database to reserve clients
       vii- Start process for every client
       viii- SSH into client
       

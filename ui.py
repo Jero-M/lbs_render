@@ -4,6 +4,8 @@ import os
 from PyQt4 import QtCore, QtGui
 from qt_ui import Ui_renderTool
 from os.path import isfile
+from math import floor
+from collections import deque
 
 import render_manager
 import filecheck
@@ -24,6 +26,7 @@ class StartUI(QtGui.QMainWindow):
         self.ui.setupUi(self)
         self.watcher = QtCore.QFileSystemWatcher(self)
 
+        #Default settings
         self.default_dir = default_dir
         self.file_filters = file_filters
         self.hostname = hostname
@@ -31,6 +34,9 @@ class StartUI(QtGui.QMainWindow):
         #Open the render database
         self.database_path = database
         self.render_db = render_manager.Database(self.database_path)
+
+        #IFD Sequence
+        self.ifd_seq = ""
 
         #Set tree columns width
         self.ui.render_list.setColumnWidth(0,115)
@@ -159,9 +165,9 @@ class StartUI(QtGui.QMainWindow):
             self.disable_render()
             print "File does not exist"
             return
-        ifd_seq = filecheck.RenderFile(file_entry)
-        self.set_start_frame(ifd_seq.start_frame)
-        self.set_end_frame(ifd_seq.end_frame)
+        self.ifd_seq = filecheck.RenderFile(file_entry)
+        self.set_start_frame(self.ifd_seq.start_frame)
+        self.set_end_frame(self.ifd_seq.end_frame)
         self.enable_render()
 
     def gather_render_data(self):
@@ -178,6 +184,20 @@ class StartUI(QtGui.QMainWindow):
         #Gather selected clients
         selected_clients_ids = [int(entry) for entry in self.render_list_ids
                                if self.render_list_items[entry].checkState(6)]
+        #Divide frames per clients
+        frames_queue = deque([1,2,3,4,5])
+        # frames_queue.popleft()
+        frame_range = range(int(self.ui.start_frame_entry.text()),
+                             int(self.ui.end_frame_entry.text()) + 1,
+                             int(self.ui.steps_entry.text()))
+        original_seq = {frame:filename for frame, filename in
+                        zip(self.ifd_seq.seq_frames, self.ifd_seq.seq_files)}
+        if 
+        print frame_range
+        print original_seq
+        total_clients = len(selected_clients_ids)
+        #Check total_clients is bigger than 0
+
         #Update Render Database
         self.render_db.open_csv(self.database_path)
         for client in selected_clients_ids:
