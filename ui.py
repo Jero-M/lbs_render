@@ -17,7 +17,7 @@ ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
 class StartUI(QtGui.QMainWindow):
     '''Build an instance of the GUI'''
 
-    def __init__(self, database, default_dir, file_filters, parent=None):
+    def __init__(self, hostname, database, default_dir, file_filters, parent=None):
         '''Initialize the interface with the correct settings'''
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_renderTool()
@@ -26,6 +26,11 @@ class StartUI(QtGui.QMainWindow):
 
         self.default_dir = default_dir
         self.file_filters = file_filters
+        self.hostname = hostname
+
+        #Open the render database
+        self.database_path = database
+        self.render_db = render_manager.Database(self.database_path)
 
         #Set tree columns width
         self.ui.render_list.setColumnWidth(0,115)
@@ -54,15 +59,14 @@ class StartUI(QtGui.QMainWindow):
                                self.verify_file_input)
 
         #Automatically load the database
-        self.database_path = database
         self.watcher.addPath(self.database_path)
         self.create_tree_list()
 
     def create_tree_list(self):
         '''Create the QTreeWidgetItem for every row and store it in a
         dictionary'''
-        render_db = render_manager.Database(self.database_path)
-        for row in render_db.data[1:]:
+        self.render_db.open_csv(self.database_path)
+        for row in self.render_db.data[1:]:
             tree_list = QtGui.QTreeWidgetItem(self.ui.render_list)
             self.render_list_ids.append(row[0])
             self.render_list_items[row[0]] = tree_list
@@ -83,8 +87,8 @@ class StartUI(QtGui.QMainWindow):
     def update_tree_list(self):
         '''Update the database by accessing the QTreeWidgetItem objects and
         editing the text''' 
-        render_db = render_manager.Database(self.database_path)
-        for row in render_db.data[1:]:
+        self.render_db.open_csv(self.database_path)
+        for row in self.render_db.data[1:]:
             tree_list = self.render_list_items[row[0]]
             tree_list.setText(0, self.format_tree_items(row[1]))
             tree_list.setText(1, self.format_tree_items(row[2]))
@@ -92,6 +96,10 @@ class StartUI(QtGui.QMainWindow):
             tree_list.setText(3, self.format_tree_items(row[4]))
             tree_list.setText(4, self.format_tree_items(row[5]))
             tree_list.setText(5, self.format_tree_items(row[6]))
+            status = tree_list.text(1)
+            current_host = str(tree_list.text(2))
+            if status == "Disabled" or status == "Rendering" and self.hostname != current_host:
+                tree_list.setCheckState(6, QtCore.Qt.Unchecked)
             self.tree_color_formatting(tree_list)
 
     def tree_color_formatting(self, row):
@@ -104,7 +112,6 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 3, "grey")
             self.change_text_color(row, 4, "grey")
             self.change_text_color(row, 5, "grey")
-            self.change_text_color(row, 6, "grey")
             row.setDisabled(True)
             #Uncheck select box
         elif status == "Available":
@@ -114,7 +121,6 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 3, "black")
             self.change_text_color(row, 4, "black")
             self.change_text_color(row, 5, "black")
-            self.change_text_color(row, 6, "black")
             row.setDisabled(False)
         elif status == "Rendering":
             self.change_text_color(row, 0, "grey")
@@ -123,7 +129,6 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 3, "grey")
             self.change_text_color(row, 4, "grey")
             self.change_text_color(row, 5, "grey")
-            self.change_text_color(row, 6, "grey")
             row.setDisabled(True)
 
     def format_tree_items(self, item):
@@ -161,7 +166,8 @@ class StartUI(QtGui.QMainWindow):
 
     def gather_render_data(self):
         '''Gather all the data from the UI and if valid begin rendering'''
-        #Check if file exists
+        #Check if user is allowed
+        #Check if IFD exists
         file_entry = str(self.ui.file_path_entry.text())
         if not os.path.isfile(file_entry):
             self.disable_render()
@@ -170,17 +176,17 @@ class StartUI(QtGui.QMainWindow):
         #Gather UI Settings
         ui_settings = self.get_all_settings()
         #Gather selected clients
-        # selected_clients = []
-        # for entry in self.render_list_ids:
-        #     tree_list = self.render_list_items[entry]
-        #     if tree_list.checkState(6):
-        #         selected_clients.append(tree_list.text(0))
-        selected_clients = [str(self.render_list_items[entry].text(0))
-                            for entry in self.render_list_ids
-                            if self.render_list_items[entry].checkState(6)]
-        print selected_clients
-        #Check if user is allowed
-        print ui_settings
+        selected_clients_ids = [int(entry) for entry in self.render_list_ids
+                               if self.render_list_items[entry].checkState(6)]
+        #Update Render Database
+        self.render_db.open_csv(self.database_path)
+        for client in selected_clients_ids:
+            self.render_db.busy(client)
+            self.render_db.set_host(client, self.hostname)
+            self.render_db.set_ifd(client, file_entry)
+            self.render_db.set_start_time(client, 1)
+            self.render_db.set_progress(client, 0)
+        self.render_db.save_csv()
 
     def enable_render(self):
         '''Enable the render button'''
@@ -264,9 +270,10 @@ class StartUI(QtGui.QMainWindow):
 
 if __name__ == "__main__":
     import config
+    from platform import node
     settings = config.Settings()
     app = QtGui.QApplication(sys.argv)
-    myapp = StartUI(settings.render_database_file,
+    myapp = StartUI(node(), settings.render_database_file,
                     settings.default_dir, settings.ifd_extensions)
     myapp.show()
     myapp.set_versions(["16.0", "15.3.03"])

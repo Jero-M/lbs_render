@@ -139,6 +139,9 @@ if __name__ == "__main__":
     settings = config.Settings()
     database_path = settings.render_database_file
     test_db = Database(database_path)
+    #Uncomment for resetting
+    # test_db.reset_to_defaults()
+    # test_db.save_csv()
     print database_path
     print test_db.data
     print test_db.header

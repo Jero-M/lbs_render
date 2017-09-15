@@ -68,7 +68,8 @@ def main():
 
     # Create the GUI
     application = QtGui.QApplication(sys.argv)
-    gui = ui.StartUI(settings.render_database_file, default_fd_dir, file_filters)
+    gui = ui.StartUI(hostname,settings.render_database_file,
+                     default_fd_dir, file_filters)
     load_default_ui_settings(gui, settings)
 
     # Show the GUI
@@ -111,13 +112,14 @@ if __name__ == "__main__":
 - Extra -
 1 - Drag and drop
 
-If a client is disabled, the selection should be unchecked
+If a client is disabled, the selection should be unchecked,
+UNLESS THE HOST IS RENDERING THERE
 
 1- Click Render
     a- Render callback function
-      i- Gather all settings
+      i- Check if user is allowed to render
       ii- Check if IFD Exists
-      iii- Check if user is allowed to render
+      iii- Gather all settings
       iv- Gather selected clients
       v- Update render database to reserve clients
       vi- Divide frames per amount of clients
