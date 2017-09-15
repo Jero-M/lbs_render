@@ -120,12 +120,11 @@ UNLESS THE HOST IS RENDERING THERE
     a- Render callback function
       i- Check if user is allowed to render
       ii- Check if IFD Exists
-      iii- Gather all settings
-      iv- Gather selected clients
-      v- Divide frames per amount of clients
-      vi- Update render database to reserve clients
-      vii- Start process for every client
-      viii- SSH into client
+      iii- Gather selected clients
+      iv- Divide frames per amount of clients
+      v- Update render database to reserve clients
+      vi- Start process for every client
+      vii- SSH into client
       
 Query selected nodes
 - 

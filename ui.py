@@ -179,24 +179,34 @@ class StartUI(QtGui.QMainWindow):
             self.disable_render()
             print "File does not exist"
             return
-        #Gather UI Settings
-        ui_settings = self.get_all_settings()
         #Gather selected clients
         selected_clients_ids = [int(entry) for entry in self.render_list_ids
                                if self.render_list_items[entry].checkState(6)]
+        #If no clients were selected then return
+        if len(selected_clients_ids) == 0:
+            print "No clients selected"
+            return
+            
         #Divide frames per clients
-        frames_queue = deque([1,2,3,4,5])
-        # frames_queue.popleft()
+        #Create a list based on input start frame, end frames and step
         frame_range = range(int(self.ui.start_frame_entry.text()),
                              int(self.ui.end_frame_entry.text()) + 1,
                              int(self.ui.steps_entry.text()))
-        original_seq = {frame:filename for frame, filename in
-                        zip(self.ifd_seq.seq_frames, self.ifd_seq.seq_files)}
-        if 
-        print frame_range
-        print original_seq
-        total_clients = len(selected_clients_ids)
-        #Check total_clients is bigger than 0
+        #Generate a dict with key:frame and value:filename with the correct
+        #sequence number
+        file_seq = {} 
+        for frame in frame_range:
+            file_seq[frame] = (self.ifd_seq.filename_head
+                              + str(self.ifd_seq.seq_padding % frame)
+                              + self.ifd_seq.filename_tail)
+        #Make a queue from the frames and loop through every client and assign
+        #one frame at a time until there are no frames left
+        frames_per_client = {client:[] for client in selected_clients_ids}
+        frames_queue = deque(frame_range)
+        for i, frame in enumerate(frame_range):
+            client_id = selected_clients_ids[i % len(selected_clients_ids)]
+            print client_id
+            frames_per_client[client_id].append(frames_queue.popleft())
 
         #Update Render Database
         self.render_db.open_csv(self.database_path)

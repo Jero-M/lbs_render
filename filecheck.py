@@ -141,6 +141,7 @@ if __name__ == "__main__":
     print "Is Sequence:", ifd.is_seq
     print "Render items:", ifd.seq_files
     print "Sequence Head:", ifd.filename_head
+    print "Sequence Tail:", ifd.filename_tail
     print "Sequence Length:", ifd.seq_length
     print "Sequence Frames:", ifd.seq_frames
     print "Start Frame:", ifd.start_frame
