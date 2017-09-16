@@ -1,5 +1,7 @@
 #!/usr/bin/python
 from collections import deque
+import os
+import subprocess
 
 def assign_frames_to_clients(clients, frames, name_head, padding, name_tail):
     #Generate a dict with key:frame and value:filename with the correct
@@ -16,8 +18,11 @@ def assign_frames_to_clients(clients, frames, name_head, padding, name_tail):
     return frames_per_client
 
 
-def start_process():
-    pass
+def start_process(amount):
+    #os.system returns exit code. It does not provide pid of the child process.
+    #Use subprocess instead
+    for process in range(amount):
+        os.system("gnome-terminal -e 'bash -c \"sleep 5; ls /home; exec bash\"'")
 
 
 if __name__ == "__main__":
@@ -28,3 +33,4 @@ if __name__ == "__main__":
     name_tail = ".ifd"
     print assign_frames_to_clients(selected_client_ids, frame_seq,
                                    name_head, padding, name_tail)
+    start_process(3)

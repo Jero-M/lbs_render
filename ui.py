@@ -207,6 +207,7 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.set_start_time(client, 1)
             self.render_db.set_progress(client, 0)
         # self.render_db.save_csv()
+        render.start_process(len(selected_clients_ids))
 
     def enable_render(self):
         '''Enable the render button'''
