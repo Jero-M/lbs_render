@@ -68,7 +68,7 @@ def main():
 
     # Create the GUI
     application = QtGui.QApplication(sys.argv)
-    gui = ui.StartUI(hostname,settings.render_database_file,
+    gui = ui.StartUI(hostname, pID_instance, settings.render_database_file,
                      default_fd_dir, file_filters)
     load_default_ui_settings(gui, settings)
 

@@ -18,7 +18,7 @@ ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
 class StartUI(QtGui.QMainWindow):
     '''Build an instance of the GUI'''
 
-    def __init__(self, hostname, database, default_dir, file_filters, parent=None):
+    def __init__(self, hostname, pid, database, default_dir, file_filters, parent=None):
         '''Initialize the interface with the correct settings'''
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_renderTool()
@@ -29,6 +29,7 @@ class StartUI(QtGui.QMainWindow):
         self.default_dir = default_dir
         self.file_filters = file_filters
         self.hostname = hostname
+        self.pid = pid
 
         #Open the render database
         self.database_path = database
@@ -207,7 +208,13 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.set_start_time(client, 1)
             self.render_db.set_progress(client, 0)
         # self.render_db.save_csv()
-        render.start_process(len(selected_clients_ids))
+        project_path = os.path.dirname(os.path.realpath(__file__)) + "/"
+        selected_render = project_path + "mantra.py"
+        for client in selected_clients_ids:
+            client_name = self.render_db.get_client(client) + ".local"
+            render.start_process(selected_render, self.pid, self.hostname,
+                                client_name, frames_per_client[client],
+                                "test.txt", 8)
 
     def enable_render(self):
         '''Enable the render button'''
@@ -294,7 +301,7 @@ if __name__ == "__main__":
     from platform import node
     settings = config.Settings()
     app = QtGui.QApplication(sys.argv)
-    myapp = StartUI(node(), settings.render_database_file,
+    myapp = StartUI(node(), os.getpid(), settings.render_database_file,
                     settings.default_dir, settings.ifd_extensions)
     myapp.show()
     myapp.set_versions(["16.0", "15.3.03"])

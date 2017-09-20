@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from collections import deque
-import os
 import subprocess
+import sys
 
 def assign_frames_to_clients(clients, frames, name_head, padding, name_tail):
     #Generate a dict with key:frame and value:filename with the correct
@@ -18,11 +18,26 @@ def assign_frames_to_clients(clients, frames, name_head, padding, name_tail):
     return frames_per_client
 
 
-def start_process(amount):
+def start_process(file_path, parent_id, host, client, render_list,
+                  log_file, processors):
     #os.system returns exit code. It does not provide pid of the child process.
     #Use subprocess instead
-    for process in range(amount):
-        os.system("gnome-terminal -e 'bash -c \"sleep 5; ls /home; exec bash\"'")
+    print file_path
+    print parent_id
+    print host
+    print client
+    print render_list
+    print log_file
+    print processors
+    render_list = [str(frame) for frame in render_list]
+    render_args = [str(parent_id), str(host), str(client), "_".join(render_list),
+                   str(log_file), str(processors)]
+    render_args = " ".join(render_args)
+    print render_args
+    terminal_cmd = ["gnome-terminal", "-e", "bash"]
+    p = subprocess.Popen(terminal_cmd + ["python {0} {1}".format(file_path,
+                         render_args)], stdout=subprocess.PIPE)
+    print p.pid
 
 
 if __name__ == "__main__":
