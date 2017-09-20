@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import subprocess
 import sys
+import time
 
 #Parent PID - Host - Client - mantra_path - render_list - log_file - processors
 try:
@@ -21,4 +22,6 @@ except:
     log_file = None
     processors = 0
 
+
+time.sleep(5)
 print parent_id, host, client, mantra_path, render_list, log_file, processors
