@@ -30,7 +30,9 @@ class Settings(object):
         self.houdini_versions = self.get_houdini_versions(
                                  self.load_setting("Houdini Versions"))
         self.mantra_path = self.get_mantra_path(self.load_setting("Mantra Path"),
-                                                self.houdini_dir)
+                                                self.houdini_dir,
+                                                sorted(self.houdini_versions.keys(),
+                                                reverse=True)[0])
         self.render_client_ui = self.get_abs_path(
                                  self.load_setting("Render Client UI"))
         self.canceled_ui = self.get_abs_path(
@@ -118,9 +120,10 @@ class Settings(object):
         '''Get the path to the default directory of the file dialog'''
         return dir_path.replace("$USER$", self.user)
 
-    def get_mantra_path(self, path, hou_dir):
+    def get_mantra_path(self, path, hou_dir, hou_version):
         '''Return the path to Mantra from the current houdini version'''
         new_path = path.replace("$HOU_INSTALL$", hou_dir)
+        new_path = new_path.replace("$HOU_VERSION$", hou_version)
         return new_path
 
     def get_ifd_extensions(self, filters):

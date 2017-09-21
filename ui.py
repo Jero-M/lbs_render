@@ -218,7 +218,8 @@ class StartUI(QtGui.QMainWindow):
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
             render.start_process(self.pid, self.hostname, client_name,
-                                 render_engine, frames_per_client[client],
+                                 render_engine, 
+                                 frames_per_client[client],
                                  "test.txt", 8)
 
     def enable_render(self):
