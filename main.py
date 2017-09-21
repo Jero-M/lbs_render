@@ -90,6 +90,7 @@ if __name__ == "__main__":
 6 - Disable Stop button if status is available
 7 - Add frames list
 
+
 - UI -
 - Have errors display on a pop-up window
 
@@ -97,6 +98,8 @@ if __name__ == "__main__":
 1 - Errors
 2 - Uploading config file updates everything
 3 - Update script for clients.csv and render_clients
+4 - Add ".local" in config
+5 - Query selected render engine
 
 - Render -
 1 - Check for file integrity

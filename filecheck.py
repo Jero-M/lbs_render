@@ -70,7 +70,7 @@ class RenderFile(object):
 
     def get_seq_object(self, path, basename):
         '''Check the directory for sequences and returns a sequence object'''
-        dir_contents = pyseq.get_sequences(path)
+        dir_contents = pyseq.get_sequences(os.listdir(path))
         for content in dir_contents:
             if content.contains(basename):
                 return content

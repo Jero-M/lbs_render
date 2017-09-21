@@ -208,13 +208,15 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.set_start_time(client, 1)
             self.render_db.set_progress(client, 0)
         # self.render_db.save_csv()
+        #Start a new process for every client
         project_path = os.path.dirname(os.path.realpath(__file__)) + "/"
         selected_render = project_path + "mantra.py"
+        
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
             render.start_process(selected_render, self.pid, self.hostname,
-                                client_name, frames_per_client[client],
-                                "test.txt", 8)
+                                 client_name, frames_per_client[client],
+                                 "test.txt", 8)
 
     def enable_render(self):
         '''Enable the render button'''
