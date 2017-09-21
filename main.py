@@ -52,10 +52,7 @@ def main():
                      }
 
     # Settings Variables
-    default_fd_dir = settings.default_dir
-    default_fd_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs"
     ignore_host_name = settings.ignore_host
-    file_filters = settings.ifd_extensions
 
     # Clients
     clients = settings.clients
@@ -68,8 +65,7 @@ def main():
 
     # Create the GUI
     application = QtGui.QApplication(sys.argv)
-    gui = ui.StartUI(hostname, pID_instance, settings.render_database_file,
-                     default_fd_dir, file_filters)
+    gui = ui.StartUI(hostname, pID_instance)
     load_default_ui_settings(gui, settings)
 
     # Show the GUI

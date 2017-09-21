@@ -19,8 +19,9 @@ def assign_frames_to_clients(clients, frames, name_head, padding, name_tail):
     return frames_per_client
 
 
-def start_process(file_path, parent_id, host, client, render_list,
-                  log_file, processors):
+def start_process(parent_pid, host, client, render_engine_script,
+                  render_engine_path, render_files_path, render_files,
+                  log_file, render_args):
     ''' 
     Terminal command:
         gnome-terminal -e 'bash -c "python /LOSTBOYS/FX/STUDENTS/FXTD_008/

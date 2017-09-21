@@ -8,6 +8,7 @@ from os.path import isfile
 import render_manager
 import filecheck
 import render
+import config
 
 
 ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
@@ -18,7 +19,7 @@ ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
 class StartUI(QtGui.QMainWindow):
     '''Build an instance of the GUI'''
 
-    def __init__(self, hostname, pid, database, default_dir, file_filters, parent=None):
+    def __init__(self, hostname, pid, parent=None):
         '''Initialize the interface with the correct settings'''
         QtGui.QWidget.__init__(self, parent)
         self.ui = Ui_renderTool()
@@ -26,13 +27,15 @@ class StartUI(QtGui.QMainWindow):
         self.watcher = QtCore.QFileSystemWatcher(self)
 
         #Default settings
-        self.default_dir = default_dir
-        self.file_filters = file_filters
+        self.settings = config.Settings()
+        self.default_dir = self.settings.default_dir
+        self.default_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs"
+        self.file_filters = self.settings.ifd_extensions
         self.hostname = hostname
         self.pid = pid
 
         #Open the render database
-        self.database_path = database
+        self.database_path = self.settings.render_database_file
         self.render_db = render_manager.Database(self.database_path)
 
         #IFD Sequence
@@ -210,12 +213,12 @@ class StartUI(QtGui.QMainWindow):
         # self.render_db.save_csv()
         #Start a new process for every client
         project_path = os.path.dirname(os.path.realpath(__file__)) + "/"
-        selected_render = project_path + "mantra.py"
-        
+        render_engine = project_path + "mantra.py"
+
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
-            render.start_process(selected_render, self.pid, self.hostname,
-                                 client_name, frames_per_client[client],
+            render.start_process(self.pid, self.hostname, client_name,
+                                 render_engine, frames_per_client[client],
                                  "test.txt", 8)
 
     def enable_render(self):
@@ -303,8 +306,7 @@ if __name__ == "__main__":
     from platform import node
     settings = config.Settings()
     app = QtGui.QApplication(sys.argv)
-    myapp = StartUI(node(), os.getpid(), settings.render_database_file,
-                    settings.default_dir, settings.ifd_extensions)
+    myapp = StartUI(node(), os.getpid())
     myapp.show()
     myapp.set_versions(["16.0", "15.3.03"])
     myapp.set_start_frame(0)
