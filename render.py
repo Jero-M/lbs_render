@@ -2,6 +2,7 @@
 from collections import deque
 import subprocess
 import sys
+import shlex
 
 def assign_frames_to_clients(clients, frames, name_head, padding, name_tail):
     #Generate a dict with key:frame and value:filename with the correct
@@ -29,14 +30,17 @@ def start_process(file_path, parent_id, host, client, render_list,
     print render_list
     print log_file
     print processors
+    # cmd = "gnome-terminal -e 'bash -c \"python /LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/mantra.py; exec bash\"'"
+    # subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
+
     render_list = [str(frame) for frame in render_list]
     render_args = [str(parent_id), str(host), str(client), "_".join(render_list),
                    str(log_file), str(processors)]
     render_args = " ".join(render_args)
     print render_args
-    terminal_cmd = ["gnome-terminal", "-e", "bash"]
-    p = subprocess.Popen(terminal_cmd + ["python {0} {1}".format(file_path,
-                         render_args)], stdout=subprocess.PIPE)
+    terminal_cmd = "gnome-terminal -e 'bash -c \"python {0} {1}; exec bash\"'".format(file_path,
+                         render_args)
+    p = subprocess.Popen(shlex.split(terminal_cmd), stdout=subprocess.PIPE)
     print p.pid
 
 
