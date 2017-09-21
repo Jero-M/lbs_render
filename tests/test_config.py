@@ -115,7 +115,7 @@ class TestConfig(unittest.TestCase):
 
     def test_mantra_path(self):
         '''Test the mantra path is valid'''
-        path = "/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/$HOU_VERSION$/bin/mantra"
+        path = "$HOU_INSTALL$/$HOU_VERSION$/bin/mantra"
         self.assertEqual(path, self.settings.mantra_path)
 
     def test_mantra_paths_exist(self):

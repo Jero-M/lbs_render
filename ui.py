@@ -189,19 +189,31 @@ class StartUI(QtGui.QMainWindow):
         if len(selected_clients_ids) == 0:
             print "No clients selected"
             return
+        #Gather Render Data
+        project_path = os.path.dirname(os.path.realpath(__file__)) + "/"
+        render_engine_script = project_path + "mantra.py"
+        render_engine_path = self.settings.get_mantra_path(
+            self.settings.mantra_path,
+            self.settings.houdini_dir,
+            self.settings.houdini_versions[str(self.ui.version_list.currentText())])
+        render_files_path = self.ifd_seq.directory
+        log_file = "text.txt"
+        render_args = "-v"
 
         #Divide frames per clients
         #Create a list based on input start frame, end frames and step
         frame_range = range(int(self.ui.start_frame_entry.text()),
                              int(self.ui.end_frame_entry.text()) + 1,
                              int(self.ui.steps_entry.text()))
-        frames_per_client = render.assign_frames_to_clients(
-                                                selected_clients_ids,
-                                                frame_range,
+        frames_seq = render.map_frames_to_files(frame_range,
                                                 self.ifd_seq.filename_head,
                                                 self.ifd_seq.seq_padding,
                                                 self.ifd_seq.filename_tail)
-
+        frames_per_client = render.assign_frames_to_clients(
+                                                selected_clients_ids,
+                                                frame_range)
+        print frames_seq
+        print frames_per_client
         #Update Render Database
         self.render_db.open_csv(self.database_path)
         for client in selected_clients_ids:
@@ -212,13 +224,14 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.set_progress(client, 0)
         # self.render_db.save_csv()
         #Start a new process for every client
-        project_path = os.path.dirname(os.path.realpath(__file__)) + "/"
-        render_engine = project_path + "mantra.py"
-
+        render_files = sorted(frames_per_client.values())
+        print self.pid
+        print self.hostname
+        print 
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
             render.start_process(self.pid, self.hostname, client_name,
-                                 render_engine, 
+                                 render_engine_script, 
                                  frames_per_client[client],
                                  "test.txt", 8)
 

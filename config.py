@@ -29,10 +29,7 @@ class Settings(object):
                             self.load_setting("Houdini Install Directory"))
         self.houdini_versions = self.get_houdini_versions(
                                  self.load_setting("Houdini Versions"))
-        self.mantra_path = self.get_mantra_path(self.load_setting("Mantra Path"),
-                                                self.houdini_dir,
-                                                sorted(self.houdini_versions.keys(),
-                                                reverse=True)[0])
+        self.mantra_path = self.load_setting("Mantra Path")
         self.render_client_ui = self.get_abs_path(
                                  self.load_setting("Render Client UI"))
         self.canceled_ui = self.get_abs_path(

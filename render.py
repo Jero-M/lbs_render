@@ -4,11 +4,14 @@ import subprocess
 import sys
 import shlex
 
-def assign_frames_to_clients(clients, frames, name_head, padding, name_tail):
+def map_frames_to_files(frames, name_head, padding, name_tail):
     #Generate a dict with key:frame and value:filename with the correct
     #sequence number
     file_seq = {frame: name_head + str(padding % frame) + name_tail
                 for frame in frames}
+    return file_seq
+
+def assign_frames_to_clients(clients, frames):
     #Make a queue from the frames and loop through every client and assign
     #one frame at a time until there are no frames left    
     frames_per_client = {client:[] for client in clients}
@@ -49,6 +52,6 @@ if __name__ == "__main__":
     name_head = "pig_v001."
     padding = "%04d"
     name_tail = ".ifd"
-    print assign_frames_to_clients(selected_client_ids, frame_seq,
-                                   name_head, padding, name_tail)
-    start_process(3)
+    print map_frames_to_files(frame_seq, name_head, padding, name_tail)
+    print assign_frames_to_clients(selected_client_ids, frame_seq)
+    # start_process(3)
