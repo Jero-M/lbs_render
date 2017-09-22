@@ -3,29 +3,31 @@ import subprocess
 import sys
 import time
 
-#Parent PID - Host - Client - mantra_path - render_list - log_file - processors
-print sys.argv[1]
-print sys.argv[5]
-print sys.argv[6]
-print sys.argv[7]
+'''
+Parent PID - Host - Client - Render Engine Path -
+Render Files Path - Render Files - Log File - Render Arguments
+'''
 try:
-    parent_id = str(sys.argv[1])
+    parent_pid = str(sys.argv[1])
     host = str(sys.argv[2])
     client = str(sys.argv[3])
-    mantra_path = str(sys.argv[4])
-    render_list = str(sys.argv[5])
-    log_file = str(sys.argv[6])
-    processors = str(sys.argv[7])
+    render_engine_path = str(sys.argv[4])
+    render_files_path = str(sys.argv[5])
+    render_files = str(sys.argv[6])
+    log_file = str(sys.argv[7])
+    render_arguments = str(sys.argv[8])
 
 except:
-    parent_id = 0
+    parent_pid = 0
     host = None
     client = None
-    mantra_path = None
-    render_list = None
+    render_engine_path  = None
+    render_files_path = None
+    render_files = None
     log_file = None
-    processors = 0
+    render_arguments = None
 
-print parent_id, host, client, mantra_path, render_list, log_file, processors
+print (parent_pid, host, client, render_engine_path,
+      render_files_path, render_files, log_file, render_arguments)
 time.sleep(2)
 

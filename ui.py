@@ -212,8 +212,6 @@ class StartUI(QtGui.QMainWindow):
         frames_per_client = render.assign_frames_to_clients(
                                                 selected_clients_ids,
                                                 frame_range)
-        print frames_seq
-        print frames_per_client
         #Update Render Database
         self.render_db.open_csv(self.database_path)
         for client in selected_clients_ids:
@@ -224,16 +222,20 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.set_progress(client, 0)
         # self.render_db.save_csv()
         #Start a new process for every client
-        render_files = sorted(frames_per_client.values())
-        print self.pid
-        print self.hostname
-        print 
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
-            render.start_process(self.pid, self.hostname, client_name,
-                                 render_engine_script, 
-                                 frames_per_client[client],
-                                 "test.txt", 8)
+            render_files = [frames_seq[render_file] for render_file in
+                                                    frames_per_client[client]]
+            render.start_process(self.pid,
+                                 self.hostname,
+                                 client_name,
+                                 render_engine_script,
+                                 render_engine_path,
+                                 render_files_path,
+                                 render_files,
+                                 log_file,
+                                 render_args
+                                )
 
     def enable_render(self):
         '''Enable the render button'''

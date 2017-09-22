@@ -34,16 +34,23 @@ def start_process(parent_pid, host, client, render_engine_script,
     Use subprocess instead.
     shlex.split splits the terminal command into the format required by Popen.
     '''
-    render_list = [str(frame) for frame in render_list]
-    render_args = [str(parent_id), str(host), str(client), "path",
-                   "_".join(render_list), str(log_file), str(processors)]
-    render_args = " ".join(render_args)
+    cmd_args = [str(parent_pid),
+                   host,
+                   client,
+                   render_engine_path,
+                   render_files_path,
+                   "$&$".join(render_files),
+                   log_file,
+                   render_args
+                  ]
+    cmd_args = " ".join(cmd_args)
 
-    terminal_cmd = "gnome-terminal -e 'bash -c \"python {0} {1}; exec bash\"'".format(file_path,
-                         render_args)
-
+    terminal_cmd = ("gnome-terminal -e 'bash -c"
+                  + " \"python {0} {1}; exec bash\"'".format(
+                                                        render_engine_script,
+                                                        cmd_args))
     p = subprocess.Popen(shlex.split(terminal_cmd), stdout=subprocess.PIPE)
-    print p.pid
+    return p.pid
 
 
 if __name__ == "__main__":
@@ -54,4 +61,3 @@ if __name__ == "__main__":
     name_tail = ".ifd"
     print map_frames_to_files(frame_seq, name_head, padding, name_tail)
     print assign_frames_to_clients(selected_client_ids, frame_seq)
-    # start_process(3)
