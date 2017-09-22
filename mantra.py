@@ -8,7 +8,7 @@ Parent PID - Host - Client - Render Engine Path -
 Render Files Path - Render Files - Log File - Render Arguments
 '''
 try:
-    parent_pid = str(sys.argv[1])
+    parent_pid = int(sys.argv[1])
     host = str(sys.argv[2])
     client = str(sys.argv[3])
     render_engine_path = str(sys.argv[4])
@@ -26,6 +26,9 @@ except:
     render_files = None
     log_file = None
     render_arguments = None
+
+# 1 - SSH Into client
+# 2 - 
 
 print (parent_pid, host, client, render_engine_path,
       render_files_path, render_files, log_file, render_arguments)
