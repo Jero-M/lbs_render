@@ -231,10 +231,10 @@ class StartUI(QtGui.QMainWindow):
                                  client_name,
                                  render_engine_script,
                                  render_engine_path,
+                                 log_file,
+                                 render_args,
                                  render_files_path,
                                  render_files,
-                                 log_file,
-                                 render_args
                                 )
 
     def enable_render(self):
