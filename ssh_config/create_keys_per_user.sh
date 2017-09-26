@@ -16,9 +16,8 @@ for d in */; do
 	sudo chown $user:users /home/$user/.ssh/id_rsa.pub
 	sudo chmod 600 /home/$user/.ssh/id_rsa
 	sudo chmod 700 /home/$user/.ssh/id_rsa.pub
-	sudo ssh-add /home/$user/.ssh/id_rsa
 	sudo rm /home/$user/.ssh/authorized_keys
 	sudo cat /home/$user/.ssh/id_rsa.pub >> /home/$user/.ssh/authorized_keys
 	sudo chown "$user":users /home/$user/.ssh/authorized_keys
-	sudo chmod 700 /home/$user/.ssh/authorized_keys
+	sudo chmod 600 /home/$user/.ssh/authorized_keys
 done

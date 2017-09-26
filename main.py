@@ -151,10 +151,18 @@ Query selected nodes
   - ~/.ssh chown user:users and chmod 700
   - ~/.ssh/id_rsa chown user:users and chmod 600
   - ~/.ssh/id_rsa.pub chown user:users and chmod 700
-  - ~/.ssh/authorized_keys chown user:users and chmod 700
+  - ~/.ssh/authorized_keys chown user:users and chmod 600
 - ssh-add might need to be used if an ssh-agent is already running but can't find keys attached
   - sign_and_send_pubkey: signing failed: agent refused operation
     - Query fingerprints using ssh-add -l
 - Copy the authorized keys and private and public keys to every users /home/.ssh dir
+- For debugging:
+  - Use ssh -v user@host for verbosity
+  - Check /var/log/auth.log in the remote computer for even more details
+  - SSH with -X for display
+
+On ~/.bashrc make sure you have:
+  - ssh-add -D &> /dev/null
+  - ssh-add &> /dev/null
 
 '''
