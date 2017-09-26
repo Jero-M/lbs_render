@@ -220,7 +220,7 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.set_ifd(client, file_entry)
             self.render_db.set_start_time(client, 1)
             self.render_db.set_progress(client, 0)
-        # self.render_db.save_csv()
+        self.render_db.save_csv()
         #Start a new process for every client
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
@@ -229,6 +229,7 @@ class StartUI(QtGui.QMainWindow):
             render.start_process(self.pid,
                                  self.hostname,
                                  client_name,
+                                 client,
                                  render_engine_script,
                                  render_engine_path,
                                  log_file,

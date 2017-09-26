@@ -22,7 +22,7 @@ def assign_frames_to_clients(clients, frames):
     return frames_per_client
 
 
-def start_process(parent_pid, host, client, render_engine_script,
+def start_process(parent_pid, host, client, client_id, render_engine_script,
                   render_engine_path, log_file, render_args,
                   render_files_path, render_files):
     ''' 
@@ -37,6 +37,7 @@ def start_process(parent_pid, host, client, render_engine_script,
     cmd_args = [str(parent_pid),
                    host,
                    client,
+                   str(client_id),
                    render_engine_path,
                    log_file,
                    render_args,

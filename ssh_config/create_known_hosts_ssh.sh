@@ -5,5 +5,5 @@ for address in $IPADDRESS
 do
   echo "Will run script on $address ..."
   sleep 1
-  ssh-keyscan $address >> $SCRIPT_DIR/known_hosts
+  ssh-keyscan $address >> $SCRIPT_DIR/network_deploy/ssh_known_hosts
 done

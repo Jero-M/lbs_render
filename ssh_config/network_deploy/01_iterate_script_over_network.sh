@@ -1,5 +1,5 @@
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
-IPADDRESS=`cat $SCRIPT_DIR/test_ip`
+IPADDRESS=`cat $SCRIPT_DIR/all_ip`
 RUNSCRIPT=$SCRIPT_DIR/restart_ssh_service.sh
 
 stty -echo

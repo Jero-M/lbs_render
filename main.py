@@ -133,18 +133,25 @@ Query selected nodes
 - Check if SSH Config has any allowed users. If it does, raise a warning
   - Give 2 options:
     - Ignore
-    - Replace the SSH Config  of the bad users for an allowed one
+    - Replace the SSH Config of the bad users for an allowed one
 - Generate a known hosts file using every host
 - Copy the known hosts to /etc/ssh/ssh_known_hosts in every network host
   - Having it in /etc/ makes it global for all users in the computer as opposed to having it in the users home dir
 - Any changes made to the config of ssh inside /etc requires the ssh rervice to be restarted
   - sudo /etc/init.d/ssh restart
-- Generate a pair of keys for every user? Or share the same keys
-  - ssh-keygen
+- Generate a pair of keys for every user
+  - ssh-keygen -f /home/$user/.ssh/id_rsa -t rsa -N '' -C $user
+    - -f is the output file, -t is the algorithm, -N is the passphrase (empty) and -C is the comment
   - This will save the keys in /home/.ssh as id_rsa.pub and id_rsa
-- Create authorized keys by copying the ssh key to the server
-  - ssh-copy-id username@host
-  - The contents of id_rsa.pub will be added to /home/.ssh/authorized_keys
+- Create authorized keys by copying the pub key to the authorized_hosts inside .ssh
+    - ssh-copy-id username@host
+    - The contents of id_rsa.pub will be added to /home/.ssh/authorized_keys
+- Double check file ownership and permissions are correct (That they aren't owned by root) Query using ls -la
+  - /home/user chown user:users and chmod 700
+  - ~/.ssh chown user:users and chmod 700
+  - ~/.ssh/id_rsa chown user:users and chmod 600
+  - ~/.ssh/id_rsa.pub chown user:users and chmod 700
+  - ~/.ssh/authorized_keys chown user:users and chmod 700
 - ssh-add might need to be used if an ssh-agent is already running but can't find keys attached
   - sign_and_send_pubkey: signing failed: agent refused operation
     - Query fingerprints using ssh-add -l
