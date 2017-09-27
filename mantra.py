@@ -43,9 +43,9 @@ for frame in render_files:
     render_command = "{0} -f {1} {2}".format(render_engine_path,
                                              render_files_path + "/"
                                              + frame, "-V 2 0 0 1 0")
-    ssh_connection.sendline(render_command)
+    ssh.send_cmd(ssh_connection, render_command)
 
-ssh_connection.logout()
+ssh.ssh_close(ssh_connection)
 
 settings = config.Settings()
 database_path = settings.render_database_file

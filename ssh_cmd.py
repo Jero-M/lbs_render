@@ -10,3 +10,6 @@ def ssh_start(client, username):
 
 def send_cmd(ssh_obj, command):
     ssh_obj.sendline(command)
+
+def ssh_close(ssh_obj):
+    ssh_obj.logout()

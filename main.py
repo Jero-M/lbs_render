@@ -80,7 +80,6 @@ if __name__ == "__main__":
 '''
 - Tree Widget Tasks -
 1 - Time object
-3 - Query Select checkbox
 4 - Make Stop button call a function
 5 - Disable Stop button based on host
 6 - Disable Stop button if status is available
@@ -125,8 +124,6 @@ UNLESS THE HOST IS RENDERING THERE
       vi- Start process for every client
       vii- SSH into client
       
-Query selected nodes
-- 
 
 - SSH Config -
 - Get all network hosts and query their sshd_config
@@ -164,5 +161,23 @@ Query selected nodes
 On ~/.bashrc make sure you have:
   - ssh-add -D &> /dev/null
   - ssh-add &> /dev/null
+
+
+- Network Config script
+1- Start window with all IPs on a side and have option of editing, adding or removing
+2- Query sshd_config in every IP and look for "allowed users"
+  a- sshd_config is correct print "OK" message and proceed
+  b- sshd_config has a few matches. Print them and give 2 options:
+    i- Modify sshd_config scripts and remove "allowed users"
+    ii- Ignore and continue
+3- Generate ssh_known_hosts based on all IPs.
+4- Copy ssh_known_hosts into every /etc/ on all IPs.
+5- Restart ssh service for all IPs
+6- Run "create_keys_per_user.sh"
+7- Check if ssh-add is included in .bashrc of all home folders
+  a- If it isnt add ssh-add into .bashrc
+  b- Ignore
+
+- Global Settings config
 
 '''
