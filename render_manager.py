@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import csv
 import os
+import sys
 
 import config
 
@@ -33,7 +34,7 @@ class Database(object):
                 writer.writerow(row)
 
     def reset_to_defaults(self):
-        '''Reset every row to [id, client, "Availble", "None", "None", 0 ,0]'''
+        '''Reset every row to [id, client, "Availble", 0, 0, 0 ,0]'''
         for i, row in enumerate(self.data):
             if i == 0: continue
             self.clean(i)
@@ -116,13 +117,11 @@ class Database(object):
     def set_start_time(self, id, new_time):
         '''Set the start time of single client'''
         if id == 0: return
-        assert type(new_time) == type(1.0) or type(new_time) == type(1)
         self.data[id][5] = new_time
 
     def set_progress(self, id, new_progress):
         '''Set the progress of single client'''
         if id == 0: return
-        assert type(new_progress) == type(1.0) or type(new_progress) == type(1)
         self.data[id][6] = new_progress
 
     def clean(self, id):
@@ -131,17 +130,48 @@ class Database(object):
         self.data[id][2] = "Available"
         self.data[id][3] = "None"
         self.data[id][4] = "None"
-        self.data[id][5] = 0
-        self.data[id][6] = 0
+        self.data[id][5] = "None"
+        self.data[id][6] = "None"
 
 
 if __name__ == "__main__":
     settings = config.Settings()
     database_path = settings.render_database_file
-    test_db = Database(database_path)
-    #Uncomment for resetting
-    # test_db.reset_to_defaults()
-    # test_db.save_csv()
-    print database_path
-    print test_db.data
-    print test_db.header
+
+    try:
+        client_id = int(sys.argv[1])
+        status = sys.argv[2]
+        host = sys.argv[3]
+        file = sys.argv[4]
+        time = sys.argv[5]
+        progress = sys.argv[6]
+
+        render_db = Database(database_path)
+        if status != "None":
+            if status == "Available":
+                render_db.enable(client_id)
+            elif status == "Rendering":
+                render_db.busy(client_id)
+            else:
+                render_db.disable(client_id)
+
+        if host != "None":
+            render_db.set_host(client_id, host)
+        if file != "None":
+            render_db.set_ifd(client_id, file)
+        if time != "None":
+            render_db.set_start_time(client_id, time)
+        if progress != "None":
+            render_db.set_progress(client_id, progress)
+        render_db.save_csv()
+
+    except:
+        test_db = Database(database_path)
+        #Uncomment for resetting database
+        # test_db.reset_to_defaults()
+        # test_db.save_csv()
+        print database_path
+        print test_db.data
+        print test_db.header
+
+    sys.exit()

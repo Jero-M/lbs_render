@@ -4,6 +4,7 @@ import os
 from PyQt4 import QtCore, QtGui
 from qt_ui import Ui_renderTool
 from os.path import isfile
+from datetime import datetime
 
 import render_manager
 import filecheck
@@ -29,7 +30,7 @@ class StartUI(QtGui.QMainWindow):
         #Default settings
         self.settings = config.Settings()
         self.default_dir = self.settings.default_dir
-        self.default_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs"
+        self.default_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs/ifds"
         self.file_filters = self.settings.ifd_extensions
         self.hostname = hostname
         self.pid = pid
@@ -218,9 +219,12 @@ class StartUI(QtGui.QMainWindow):
             self.render_db.busy(client)
             self.render_db.set_host(client, self.hostname)
             self.render_db.set_ifd(client, file_entry)
-            self.render_db.set_start_time(client, 1)
-            self.render_db.set_progress(client, 0)
+            self.render_db.set_start_time(client, datetime.today().strftime(
+                                                         "%d.%m.%y %H:%M:%S"))
+            self.render_db.set_progress(client, "0/{0}".format(str(len(
+                                                 frames_per_client[client]))))
         self.render_db.save_csv()
+
         #Start a new process for every client
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
