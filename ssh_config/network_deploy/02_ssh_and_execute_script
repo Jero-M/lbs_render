@@ -1,0 +1,22 @@
+#!/usr/bin/expect -f
+
+set PASSW [lindex $argv 0]
+set IPADDY [lindex $argv 1]
+set RUNSCRIPT [lindex $argv 2]
+
+spawn ssh lbsstaff@$IPADDY
+expect "assword"
+send "$PASSW\r"
+expect "$ "
+
+send "sudo echo imin\r"
+expect "assword"
+send "$PASSW\r"
+expect "$ "
+
+send "sh $RUNSCRIPT\r"
+expect "$ "
+
+#interact
+sleep 2
+send "exit\r"
