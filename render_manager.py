@@ -63,6 +63,12 @@ class Database(object):
         '''Return a single row'''
         return self.data[id]
 
+    def get_id(self, host):
+        '''Return the ID based on host'''
+        for row in self.data[1:]:
+            if row[1] == host:
+                return row[0]
+
     def get_client(self, id):
         '''Return the client name of a row based on id'''
         return self.data[id][1]
