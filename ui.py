@@ -30,7 +30,7 @@ class StartUI(QtGui.QMainWindow):
         #Default settings
         self.settings = config.Settings()
         self.default_dir = self.settings.default_dir
-        self.default_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs/ifds"
+        # self.default_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs/ifds"
         self.file_filters = self.settings.ifd_extensions
         self.hostname = hostname
         self.pid = pid
