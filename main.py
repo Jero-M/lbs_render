@@ -10,17 +10,19 @@ import appindicator
 
 class AppIndicatorExample:
     def __init__(self):
-        self.ind = appindicator.Indicator ("example-simple-client", "indicator-messages", appindicator.CATEGORY_APPLICATION_STATUS)
+        self.ind = appindicator.Indicator("example-simple-client",
+                                    "indicator-messages",
+                                    appindicator.CATEGORY_APPLICATION_STATUS)
         self.ind.set_status (appindicator.STATUS_ACTIVE)
         self.ind.set_attention_icon ("indicator-messages-new")
-        self.ind.set_icon("distributor-logo")
+        self.ind.set_icon(project_path + "/img/app_logo.png")
 
         self.menu = gtk.Menu()
         
-        open_ui_item = gtk.MenuItem("Open UI")
-        open_ui_item.connect("activate", open_ui)
-        open_ui_item.show()
-        self.menu.append(open_ui_item)
+        open_control_panel = gtk.MenuItem("Control Panel")
+        open_control_panel.connect("activate", open_ui)
+        open_control_panel.show()
+        self.menu.append(open_control_panel)
 
         enable_render = gtk.MenuItem("Enable Rendering")
         enable_render.connect("activate", enable)
