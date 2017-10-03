@@ -2,7 +2,7 @@
 import sys
 import os
 from PyQt4 import QtCore, QtGui
-from qt_ui import Ui_renderTool
+from control_panel_qt_ui import Ui_renderTool
 from os.path import isfile
 from datetime import datetime
 
