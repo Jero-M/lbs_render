@@ -6,7 +6,7 @@ from multiprocessing import cpu_count
 from PyQt4 import QtCore, QtGui
 
 import config
-import ui
+import control_panel_ui
 
 
 def load_default_ui_settings(gui, settings):
@@ -65,7 +65,7 @@ def main():
 
     # Create the GUI
     application = QtGui.QApplication(sys.argv)
-    gui = ui.StartUI(hostname, pID_instance)
+    gui = control_panel_ui.StartUI(hostname, pID_instance)
     load_default_ui_settings(gui, settings)
 
     # Show the GUI
