@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ifd_tool_v003.ui'
+# Form implementation generated from reading ui file 'ifd_tool_qt.ui'
 #
 # Created by: PyQt4 UI code generator 4.11.4
 #
@@ -25,9 +25,9 @@ except AttributeError:
 class Ui_renderTool(object):
     def setupUi(self, renderTool):
         renderTool.setObjectName(_fromUtf8("renderTool"))
-        renderTool.resize(778, 821)
+        renderTool.resize(783, 821)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("../../publishIcon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("img/publishIcon.jpg")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         renderTool.setWindowIcon(icon)
         renderTool.setAutoFillBackground(False)
         self.centralwidget = QtGui.QWidget(renderTool)
@@ -203,7 +203,7 @@ class Ui_renderTool(object):
         self.verticalLayout.addWidget(self.progress_bar)
         renderTool.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(renderTool)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 778, 25))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 783, 25))
         self.menubar.setObjectName(_fromUtf8("menubar"))
         renderTool.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(renderTool)
