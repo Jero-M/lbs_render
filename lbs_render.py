@@ -48,17 +48,17 @@ class AppIndicatorExample:
 
 def disable(*kwargs):
     disable_file = project_path + "/disable_host.py"
-    cmd = "python {0}".format(disable_file)
+    cmd = disable_file
     subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
 
 def enable(*kwargs):
     enable_file = project_path + "/enable_host.py"
-    cmd = "python {0}".format(enable_file)
+    cmd = enable_file
     subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
 
 def open_ui(*kwargs):
     control_panel_file = project_path + "/control_panel.py"
-    cmd = "python {0}".format(control_panel_file)
+    cmd = control_panel_file
     subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
 
 
