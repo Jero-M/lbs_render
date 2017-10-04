@@ -47,7 +47,7 @@ def start_process(parent_pid, host, client, client_id, render_engine_script,
     cmd_args = " ".join(cmd_args)
 
     terminal_cmd = ("gnome-terminal -e 'bash -c"
-                  + " \"python {0} {1}; exec bash\"'".format(
+                  + " \"{0} {1}; exec bash\"'".format(
                                                         render_engine_script,
                                                         cmd_args))
     p = subprocess.Popen(shlex.split(terminal_cmd), stdout=subprocess.PIPE)
