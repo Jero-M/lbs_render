@@ -226,21 +226,22 @@ class StartUI(QtGui.QMainWindow):
         self.render_db.save_csv()
 
         #Start a new process for every client
+        render_processes = {}
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
             render_files = [frames_seq[render_file] for render_file in
                                                     frames_per_client[client]]
-            render.start_process(self.pid,
-                                 self.hostname,
-                                 client_name,
-                                 client,
-                                 render_engine_script,
-                                 render_engine_path,
-                                 log_file,
-                                 render_args,
-                                 render_files_path,
-                                 render_files,
-                                )
+            render_pid = render.start_process(self.pid,
+                                              self.hostname,
+                                              client_name,
+                                              client,
+                                              render_engine_script,
+                                              render_engine_path,
+                                              log_file,
+                                              render_args,
+                                              render_files_path,
+                                              render_files,
+                                             )
 
     def enable_render(self):
         '''Enable the render button'''
@@ -344,7 +345,6 @@ if __name__ == "__main__":
     myapp.enable_delete_ifd(True)
     test = myapp.get_all_settings()
     print test
-
 
     sys.exit(app.exec_())
 
