@@ -70,7 +70,8 @@ def main():
 
     # Show the GUI
     gui.show()
-    application.exec_()
+    # application.exec_()
+    sys.exit(application.exec_())
 
 
 if __name__ == "__main__":
@@ -78,7 +79,6 @@ if __name__ == "__main__":
 
 '''
 Priority List
-0- Change UI file name to control_panel_ui
 1- Notify client of render
 2- Turn UI controls into render arguments
 3- Verbosity off should prevent terminal from opening
@@ -104,7 +104,8 @@ Priority List
 19- Arnold Support
 
 
-
+Notify client? Run script that checks if db is changed. If its own hostname
+is set to rendering, then run a command.
 
 
 - Tree Widget Tasks -
@@ -204,5 +205,12 @@ On ~/.bashrc make sure you have:
   b- Ignore
 
 - Global Settings config
+
+
+#!/bin/sh
+export PYTHONPATH="/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/ext_modules"
+python /LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/main.py
+exit
+
 
 '''
