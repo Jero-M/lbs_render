@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys
 import os
+import signal
 from PyQt4 import QtCore, QtGui
 from control_panel_qt_ui import Ui_renderTool
 from os.path import isfile
@@ -266,8 +267,21 @@ class StartUI(QtGui.QMainWindow):
     def stop_render(self):
         '''Stop the current render'''
         target = self.sender()
-        data = target.row_id
-        print "Stop {0}".format(data)
+        target_id = int(target.row_id)
+        try:
+            kill_pid = int(self.render_processes[target_id])
+        except:
+            print "Render process was not found"
+            return
+        # cancel_cmd = "kill -9 {0}".format(str(target_id))
+        kill = os.kill(kill_pid, signal.SIGKILL)
+        print kill_pid
+        print kill
+        # if kill:
+        #     return
+        # else:
+        #     print "Error cancelling the render"
+        #     return
 
     def enable_render(self):
         '''Enable the render button'''
