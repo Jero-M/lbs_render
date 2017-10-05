@@ -83,10 +83,12 @@ class StartUI(QtGui.QMainWindow):
         dictionary'''
         self.render_db.open_csv(self.database_path)
         for row in self.render_db.data[1:]:
+            #Create tree list
             tree_list = QtGui.QTreeWidgetItem(self.ui.render_list)
             self.render_list_ids.append(row[0])
             self.render_list_items[row[0]] = tree_list
 
+            #Set every coulmns text
             tree_list.setText(0, self.format_tree_items(row[1]))
             tree_list.setText(1, self.format_tree_items(row[2]))
             tree_list.setText(2, self.format_tree_items(row[3]))
@@ -94,12 +96,19 @@ class StartUI(QtGui.QMainWindow):
             tree_list.setText(4, self.format_tree_items(row[5]))
             tree_list.setText(5, self.format_tree_items(row[6]))
             tree_list.setCheckState(6, QtCore.Qt.Unchecked)
+            #Create stop button
             stop_button = QtGui.QPushButton("Stop", self)
+            #Store row ID into the stop button
+            stop_button.row_id = row[0]
+            #Group all buttons in a dictionary
             self.stop_buttons[row[0]] = stop_button
+            #Button size
             stop_button.setMinimumSize(QtCore.QSize(80, 20))
             stop_button.setMaximumSize(QtCore.QSize(80, 20))
             self.ui.render_list.setItemWidget(tree_list, 7, stop_button)
-            stop_button.clicked.connect(lambda: self.stop_render(row[0]))
+            #Connect button to function
+            stop_button.clicked.connect(self.stop_render)
+            #Fromat text
             self.tree_color_formatting(tree_list, row[0])
 
     def update_tree_list(self):
@@ -254,9 +263,11 @@ class StartUI(QtGui.QMainWindow):
                                              )
             self.render_processes[client] = render_pid
 
-    def stop_render(self, id):
+    def stop_render(self):
         '''Stop the current render'''
-        print "Stop {0}".format(id)
+        target = self.sender()
+        data = target.row_id
+        print "Stop {0}".format(data)
 
     def enable_render(self):
         '''Enable the render button'''
