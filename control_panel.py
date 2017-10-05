@@ -79,29 +79,34 @@ if __name__ == "__main__":
 
 '''
 Priority List
-1- Notify client of render
-2- Turn UI controls into render arguments
-3- Verbosity off should prevent terminal from opening
-4- Uncheck selection for rendering so more renders can be sent
-5- Stop button functionality
-6- Delete IFD feature
-7- Attach Message into render cmds
-8- IFD File should be File and it should have %d04 instead of 0001
-9- Progress bar
+0- Stop button functionality
+1- Store PID of every render in the render_database
+1a- Quitting from the Task Indicator should close the Control Panel
+1b- Opening the Control Panel should load the render_processes PIDs from the render_database
+2- Add user column for TreeView
+3- Notify client of render
+4- Turn UI controls into render arguments
+5- Verbosity off should prevent terminal from opening
+6- Uncheck selection for rendering so more renders can be sent
 
-10- Client UI
-11- Cancel through client side
-12- Cancel UI
-13- Notify host of cancelled render
+7- Delete IFD feature
+8- Attach Message into render cmds
+9- IFD File should be File and it should have %d04 instead of 0001
+10- Progress bar
 
-14- Log module
-15- Save in json format
-16- Save every month in different directory
+11- Client UI
+12- Cancel through client side
+13- Cancel UI
+14- Notify host of cancelled render
 
-17- Config UI
-18- Network Config UI
+15- Log module
+16- Save in json format
+17- Save every month in different directory
 
-19- Arnold Support
+18- Config UI
+19- Network Config UI
+
+20- Arnold Support
 
 
 Notify client? Run script that checks if db is changed. If its own hostname

@@ -30,7 +30,6 @@ class StartUI(QtGui.QMainWindow):
         #Default settings
         self.settings = config.Settings()
         self.default_dir = self.settings.default_dir
-        # self.default_dir = "/LOSTBOYS/FX/STUDENTS/FXTD_008/Jeronimo/scripts/ifd_3.0_dev/ifd/tests/img_seqs/ifds"
         self.file_filters = self.settings.ifd_extensions
         self.hostname = hostname
         self.pid = pid
@@ -41,6 +40,9 @@ class StartUI(QtGui.QMainWindow):
 
         #IFD Sequence
         self.ifd_seq = ""
+
+        #Render Processes IDs
+        self.render_processes = {}
 
         #Set tree columns width
         self.ui.render_list.setColumnWidth(0,115)
@@ -53,6 +55,7 @@ class StartUI(QtGui.QMainWindow):
         self.ui.render_list.setColumnWidth(7,60)
         self.render_list_items = {}
         self.render_list_ids = []
+        self.stop_buttons = {}
 
         #Signal Handling
         QtCore.QObject.connect(self.ui.browse_button,
@@ -64,6 +67,9 @@ class StartUI(QtGui.QMainWindow):
         QtCore.QObject.connect(self.watcher,
                                QtCore.SIGNAL("fileChanged(const QString&)"),
                                self.update_tree_list)
+        QtCore.QObject.connect(self.ui.file_path_entry,
+                               QtCore.SIGNAL("textChanged(const QString&)"),
+                               self.verify_file_input)
         QtCore.QObject.connect(self.ui.file_path_entry,
                                QtCore.SIGNAL("textChanged(const QString&)"),
                                self.verify_file_input)
@@ -88,11 +94,13 @@ class StartUI(QtGui.QMainWindow):
             tree_list.setText(4, self.format_tree_items(row[5]))
             tree_list.setText(5, self.format_tree_items(row[6]))
             tree_list.setCheckState(6, QtCore.Qt.Unchecked)
-            cancel_button = QtGui.QPushButton("Stop", self)
-            cancel_button.setMinimumSize(QtCore.QSize(80, 20))
-            cancel_button.setMaximumSize(QtCore.QSize(80, 20))
-            self.ui.render_list.setItemWidget(tree_list, 7, cancel_button)
-            self.tree_color_formatting(tree_list)
+            stop_button = QtGui.QPushButton("Stop", self)
+            self.stop_buttons[row[0]] = stop_button
+            stop_button.setMinimumSize(QtCore.QSize(80, 20))
+            stop_button.setMaximumSize(QtCore.QSize(80, 20))
+            self.ui.render_list.setItemWidget(tree_list, 7, stop_button)
+            stop_button.clicked.connect(lambda: self.stop_render(row[0]))
+            self.tree_color_formatting(tree_list, row[0])
 
     def update_tree_list(self):
         '''Update the database by accessing the QTreeWidgetItem objects and
@@ -110,9 +118,9 @@ class StartUI(QtGui.QMainWindow):
             current_host = str(tree_list.text(2))
             if status == "Disabled" or status == "Rendering" and self.hostname != current_host:
                 tree_list.setCheckState(6, QtCore.Qt.Unchecked)
-            self.tree_color_formatting(tree_list)
+            self.tree_color_formatting(tree_list, row[0])
 
-    def tree_color_formatting(self, row):
+    def tree_color_formatting(self, row, id):
         '''Format the interface of the tree view depending on its values'''
         status = str(row.text(1))
         if status == "Disabled":
@@ -123,6 +131,7 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 4, "grey")
             self.change_text_color(row, 5, "grey")
             row.setDisabled(True)
+            self.stop_buttons[id].setEnabled(False)
             #Uncheck select box
         elif status == "Available":
             self.change_text_color(row, 0, "black")
@@ -131,6 +140,7 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 3, "black")
             self.change_text_color(row, 4, "black")
             self.change_text_color(row, 5, "black")
+            self.stop_buttons[id].setEnabled(False)
             row.setDisabled(False)
         elif status == "Rendering":
             self.change_text_color(row, 0, "grey")
@@ -139,6 +149,7 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 3, "grey")
             self.change_text_color(row, 4, "grey")
             self.change_text_color(row, 5, "grey")
+            self.stop_buttons[id].setEnabled(True)
             row.setDisabled(True)
 
     def format_tree_items(self, item):
@@ -226,7 +237,6 @@ class StartUI(QtGui.QMainWindow):
         self.render_db.save_csv()
 
         #Start a new process for every client
-        render_processes = {}
         for client in selected_clients_ids:
             client_name = self.render_db.get_client(client) + ".local"
             render_files = [frames_seq[render_file] for render_file in
@@ -242,6 +252,11 @@ class StartUI(QtGui.QMainWindow):
                                               render_files_path,
                                               render_files,
                                              )
+            self.render_processes[client] = render_pid
+
+    def stop_render(self, id):
+        '''Stop the current render'''
+        print "Stop {0}".format(id)
 
     def enable_render(self):
         '''Enable the render button'''
