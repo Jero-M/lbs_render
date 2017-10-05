@@ -1,12 +1,14 @@
 #!/usr/bin/python
 import os
 import sys
+import signal
 import subprocess
 import shlex
 
 import pygtk
 import gtk
 import appindicator
+
 
 class AppIndicatorExample:
     def __init__(self):
@@ -44,23 +46,34 @@ class AppIndicatorExample:
         self.ind.set_menu(self.menu)
 
     def quit(self, widget, data=None):
+        for pid in child_pids:
+            try:
+                os.kill(pid, signal.SIGKILL)
+            except:
+                continue
         gtk.main_quit()
+
 
 def disable(*kwargs):
     disable_file = project_path + "/disable_host.py"
     cmd = disable_file
-    subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
+    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
+    if process.pid not in child_pids:
+        child_pids.append(process.pid)
 
 def enable(*kwargs):
     enable_file = project_path + "/enable_host.py"
     cmd = enable_file
-    subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
+    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
+    if process.pid not in child_pids:
+        child_pids.append(process.pid)
 
 def open_ui(*kwargs):
     control_panel_file = project_path + "/control_panel.py"
     cmd = control_panel_file
-    subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
-
+    process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
+    if process.pid not in child_pids:
+        child_pids.append(process.pid)
 
 def main():
     gtk.main()
@@ -68,6 +81,7 @@ def main():
 
 if __name__ == "__main__":
     project_path = os.path.dirname(os.path.realpath(__file__))
+    child_pids = []
     #App Indicator
     indicator = AppIndicatorExample()
     main()
