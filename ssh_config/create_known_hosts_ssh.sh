@@ -1,9 +1,6 @@
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
-IPADDRESS=`cat $SCRIPT_DIR/network_deploy/all_ip`
+IPADDRESS=$SCRIPT_DIR/network_deploy/all_ip
 
-for address in $IPADDRESS
-do
-  echo "Will run script on $address ..."
-  sleep 1
-  ssh-keyscan $address >> $SCRIPT_DIR/network_deploy/ssh_known_hosts
-done
+: > $SCRIPT_DIR/network_deploy/ssh_known_hosts
+
+ssh-keyscan -f $IPADDRESS -T 30 >> $SCRIPT_DIR/network_deploy/ssh_known_hosts

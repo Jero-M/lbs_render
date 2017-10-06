@@ -123,7 +123,7 @@ class StartUI(QtGui.QMainWindow):
             tree_list.setText(5, self.format_tree_items(row[6]))
             status = tree_list.text(1)
             current_host = str(tree_list.text(2))
-            if status == "Disabled" or status == "Rendering" and hostname != current_host:
+            if status == "Disabled" or status == "Rendering" and user + "@" + hostname != current_host:
                 tree_list.setCheckState(6, QtCore.Qt.Unchecked)
             self.tree_color_formatting(tree_list, row[0])
 
@@ -248,7 +248,7 @@ class StartUI(QtGui.QMainWindow):
         self.render_db.open_csv(settings.render_database_file)
         for client in selected_clients_ids:
             self.render_db.busy(client)
-            self.render_db.set_host(client, hostname)
+            self.render_db.set_host(client, user + "@" + hostname)
             self.render_db.set_ifd(client, file_entry)
             self.render_db.set_start_time(client, datetime.today().strftime(
                                                          "%d.%m.%y %H:%M:%S"))
@@ -413,9 +413,7 @@ if __name__ == "__main__":
 Priority List
 0- Stop button functionality
 1- Store PID of every render in the render_database
-1a- Quitting from the Task Indicator should close the Control Panel
 1b- Opening the Control Panel should load the render_processes PIDs from the render_database
-2- Add user column for TreeView
 3- Notify client of render
 4- Turn UI controls into render arguments
 5- Verbosity off should prevent terminal from opening
