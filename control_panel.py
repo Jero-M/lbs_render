@@ -413,9 +413,7 @@ if __name__ == "__main__":
 Priority List
 0- Stop button functionality
 1- Store PID of every render in the render_database
-1a- Quitting from the Task Indicator should close the Control Panel
 1b- Opening the Control Panel should load the render_processes PIDs from the render_database
-2- Add user column for TreeView
 3- Notify client of render
 4- Turn UI controls into render arguments
 5- Verbosity off should prevent terminal from opening
