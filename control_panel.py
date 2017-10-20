@@ -2,6 +2,8 @@
 import os
 import sys
 import signal
+import subprocess
+import shlex
 from platform import node
 from os.path import isfile
 from datetime import datetime
@@ -280,8 +282,9 @@ class StartUI(QtGui.QMainWindow):
         target_id = int(target.row_id)
         self.render_db.open_csv(settings.render_database_file)
         child_processes = self.render_db.get_pids(target_id)
+        client = self.render_db.get_client(target_id)
 
-        #Stop the local process that is sending the renders
+        #Stop the local processes that are sending the renders
         if child_processes != None:
             for process in child_processes:
                 try:
@@ -289,30 +292,13 @@ class StartUI(QtGui.QMainWindow):
                 except:
                     continue
 
-        #Stop the remote mantrabin process
+        self.render_db.open_csv(settings.render_database_file)
+        self.render_db.clean(target_id)
+        self.render_db.save_csv()
 
-            self.render_db.open_csv(settings.render_database_file)
-            self.render_db.clean(target_id)
-            self.render_db.save_csv()
-
-
-
-
-        # try:
-        #     kill_pid = int(self.render_processes[target_id])
-        # except:
-        #     print "Render process was not found"
-        #     return
-        # cancel_cmd = "kill -9 {0}".format(str(target_id))
-        # os.killpg(3433, signal.SIGKILL)
-        # kill = os.kill(kill_pid, signal.SIGKILL)
-        # print kill_pid
-        # print kill
-        # if kill:
-        #     return
-        # else:
-        #     print "Error cancelling the render"
-        #     return
+        #Stop the remote mantra-bin process / Seems not necessary
+        # kill_cmd = "ssh {0}@{1}.local killall -9 mantra-bin".format(client, user)
+        # subprocess.call(shlex.split(kill_cmd))
 
     def enable_render(self):
         '''Enable the render button'''
