@@ -1,6 +1,6 @@
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 IPADDRESS=`cat $SCRIPT_DIR/all_ip`
-RUNSCRIPT=$SCRIPT_DIR/copy_etc_ssh_known_hosts.sh
+RUNSCRIPT=$SCRIPT_DIR/restart_ssh_service.sh
 
 stty -echo
 read -p 'Enter the Lost Boys Staff Password:' PASSW

@@ -9,7 +9,6 @@ sys.path.insert(0, test_path)
 from render_manager import Database
 import config
 
-
 class TestRenderDatabase(unittest.TestCase):
     '''Tests for the Render Manager Database'''
 
@@ -18,9 +17,10 @@ class TestRenderDatabase(unittest.TestCase):
         self.settings = config.Settings()
         self.database_path = self.settings.render_database_file
         self.render_db = Database(self.database_path)
-        self.default_id = [1, "comp-001", "Available", "None", "None", 0, 0]
+        self.default_id = [1, "comp-001", "Available", "None", "None", "None",
+                           "None", "None"]
         self.header = ["id", "client", "status", "host", "ifd", "start_time",
-                      "progress"]
+                      "progress", "pids"]
         self.valid_status = ["Available", "Disabled", "Rendering"]
 
     def test_header_integrity(self):
@@ -30,7 +30,7 @@ class TestRenderDatabase(unittest.TestCase):
     def test_get_row(self):
         '''Test that a row has a length of 7'''
         row = self.render_db.get_row(1)
-        self.assertEqual(len(row), 7)
+        self.assertEqual(len(row), 8)
 
     def test_get_client(self):
         '''Test that the client ID is a string'''
@@ -79,7 +79,7 @@ class TestRenderDatabase(unittest.TestCase):
             self.assertIn(host, clients)
 
     def test_all_get_ifd(self):
-        '''Test that all IFds are a path or none'''
+        '''Test that all IFDs are a path or none'''
         for i, row in enumerate(self.render_db.data):
             if i == 0: continue
             ifd = self.render_db.get_ifd(i)
@@ -137,6 +137,36 @@ class TestRenderDatabase(unittest.TestCase):
         '''Test that the progress is set'''
         self.render_db.set_progress(6, 0.5)
         self.assertEqual(self.render_db.get_progress(6), 0.5)
+
+    def test_add_pid(self):
+        '''Test that a PID is appended to the list'''
+        self.render_db.add_pid(4, 20)
+        pids = self.render_db.get_pids(4)
+        self.assertIn(20, pids)
+
+    def test_add_multiple_pids(self):
+        '''Test adding multiple PIDS'''
+        self.render_db.add_pid(5, 21)
+        self.render_db.add_pid(5, 22)
+        self.render_db.add_pid(5, 23)
+        pids = self.render_db.get_pids(5)
+        self.assertEqual([21, 22, 23], pids)
+
+    def test_remove_pid(self):
+        '''Test that a PID is removed from the list'''
+        self.render_db.add_pid(3, 31)
+        self.render_db.remove_pid(3, 31)
+        pids = self.render_db.get_pids(3)
+        self.assertEqual(None, pids)
+
+    def test_remove_single_pid(self):
+        '''Test removing a single PID from a list of several'''
+        self.render_db.add_pid(6, 31)
+        self.render_db.add_pid(6, 32)
+        self.render_db.add_pid(6, 33)
+        self.render_db.remove_pid(6, 32)
+        pids = self.render_db.get_pids(6)
+        self.assertEqual([31, 33], pids)
 
     def test_clean(self):
         '''Test that clean will return a clean row'''

@@ -2,6 +2,8 @@
 import os
 import sys
 import signal
+import subprocess
+import shlex
 from platform import node
 from os.path import isfile
 from datetime import datetime
@@ -38,9 +40,6 @@ class StartUI(QtGui.QMainWindow):
 
         #IFD Sequence
         self.ifd_seq = ""
-
-        #Render Processes IDs
-        self.render_processes = {}
 
         #Set tree columns width
         self.ui.render_list.setColumnWidth(0,115)
@@ -272,26 +271,34 @@ class StartUI(QtGui.QMainWindow):
                                               render_files_path,
                                               render_files,
                                              )
-            self.render_processes[client] = render_pid
+            # Set the Gnome-terminal PID in the database
+            self.render_db.open_csv(settings.render_database_file)
+            self.render_db.add_pid(client, render_pid)
+            self.render_db.save_csv()
 
     def stop_render(self):
         '''Stop the current render'''
         target = self.sender()
         target_id = int(target.row_id)
-        try:
-            kill_pid = int(self.render_processes[target_id])
-        except:
-            print "Render process was not found"
-            return
-        # cancel_cmd = "kill -9 {0}".format(str(target_id))
-        kill = os.kill(kill_pid, signal.SIGKILL)
-        print kill_pid
-        print kill
-        # if kill:
-        #     return
-        # else:
-        #     print "Error cancelling the render"
-        #     return
+        self.render_db.open_csv(settings.render_database_file)
+        child_processes = self.render_db.get_pids(target_id)
+        client = self.render_db.get_client(target_id)
+
+        #Stop the local processes that are sending the renders
+        if child_processes != None:
+            for process in child_processes:
+                try:
+                    os.kill(process, signal.SIGTERM)
+                except:
+                    continue
+
+        self.render_db.open_csv(settings.render_database_file)
+        self.render_db.clean(target_id)
+        self.render_db.save_csv()
+
+        #Stop the remote mantra-bin process / Seems not necessary
+        # kill_cmd = "ssh {0}@{1}.local killall -9 mantra-bin".format(client, user)
+        # subprocess.call(shlex.split(kill_cmd))
 
     def enable_render(self):
         '''Enable the render button'''
