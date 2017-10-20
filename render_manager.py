@@ -98,7 +98,7 @@ class Database(object):
         if self.data[id][7] == "None":
             return None
         else:
-            return self.data[id][7].split("-")
+            return map(int, self.data[id][7].split("-"))
 
     def disable(self, id):
         '''Set status of a single client to Disabled'''
@@ -140,17 +140,25 @@ class Database(object):
     def add_pid(self, id, pid):
         '''Add the PID of a process being used by a single client'''
         if id == 0: return
+        try:
+            pid = int(pid)
+        except:
+            return
         pids = self.get_pids(id)
         if pids == None:
             self.data[id][7] = str(pid)
         else:
             if pid not in pids:
                 pids.append(pid)
-                self.data[id][7] = "-".join(pids)
+                self.data[id][7] = "-".join(map(str, pids))
 
     def remove_pid(self, id, pid):
         '''Remove the PID of a process being used by a single client''' 
         if id == 0: return
+        try:
+            pid = int(pid)
+        except:
+            return
         pids = self.get_pids(id)
         if pids == None:
             return
@@ -159,7 +167,10 @@ class Database(object):
                 return
             else:
                 pids.remove(pid)
-                self.data[id][7] = "-".join(pids)
+                if len(pids) == 0:
+                    self.data[id][7] = "None"
+                else:
+                    self.data[id][7] = "-".join(map(str, pids))
 
     def clean(self, id):
         '''Reset a single row'''

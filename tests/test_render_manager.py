@@ -138,6 +138,36 @@ class TestRenderDatabase(unittest.TestCase):
         self.render_db.set_progress(6, 0.5)
         self.assertEqual(self.render_db.get_progress(6), 0.5)
 
+    def test_add_pid(self):
+        '''Test that a PID is appended to the list'''
+        self.render_db.add_pid(4, 20)
+        pids = self.render_db.get_pids(4)
+        self.assertIn(20, pids)
+
+    def test_add_multiple_pids(self):
+        '''Test adding multiple PIDS'''
+        self.render_db.add_pid(5, 21)
+        self.render_db.add_pid(5, 22)
+        self.render_db.add_pid(5, 23)
+        pids = self.render_db.get_pids(5)
+        self.assertEqual([21, 22, 23], pids)
+
+    def test_remove_pid(self):
+        '''Test that a PID is removed from the list'''
+        self.render_db.add_pid(3, 31)
+        self.render_db.remove_pid(3, 31)
+        pids = self.render_db.get_pids(3)
+        self.assertEqual(None, pids)
+
+    def test_remove_single_pid(self):
+        '''Test removing a single PID from a list of several'''
+        self.render_db.add_pid(6, 31)
+        self.render_db.add_pid(6, 32)
+        self.render_db.add_pid(6, 33)
+        self.render_db.remove_pid(6, 32)
+        pids = self.render_db.get_pids(6)
+        self.assertEqual([31, 33], pids)
+
     def test_clean(self):
         '''Test that clean will return a clean row'''
         client_id = 4
