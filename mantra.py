@@ -4,6 +4,7 @@ import sys
 import time
 import getpass
 import os
+import signal
 
 import ssh_cmd as ssh
 import render_manager
@@ -14,6 +15,8 @@ Parent PID - Host - Client - Render Engine Path -
 Render Files Path - Render Files - Log File - Render Arguments
 '''
 project_path = os.path.dirname(os.path.realpath(__file__))
+pID_instance = os.getpid()
+
 
 #Load system arguments
 try:
@@ -30,10 +33,24 @@ try:
 except:
     sys.exit()
 
+
+def sigterm_handler(signal, frame):
+    print "Bye bye"
+    ssh.ssh_close(ssh_connection)
+    render_db = render_manager.Database(database_path)
+    render_db.clean(client_id)
+    render_db.save_csv()
+    sys.exit(0)
+
+signal.signal(signal.SIGTERM, sigterm_handler)
+
+
 #If successful, load the settings
 settings = config.Settings()
 database_path = settings.render_database_file
 user = getpass.getuser()
+
+#Add PID to database
 
 #Start SSH Connection with Client
 ssh_connection = ssh.ssh_start(client, user)

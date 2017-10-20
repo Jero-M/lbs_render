@@ -273,6 +273,7 @@ class StartUI(QtGui.QMainWindow):
                                               render_files,
                                              )
             self.render_processes[client] = render_pid
+            print render_pid
 
     def stop_render(self):
         '''Stop the current render'''
@@ -284,6 +285,7 @@ class StartUI(QtGui.QMainWindow):
             print "Render process was not found"
             return
         # cancel_cmd = "kill -9 {0}".format(str(target_id))
+        # os.killpg(3433, signal.SIGKILL)
         kill = os.kill(kill_pid, signal.SIGKILL)
         print kill_pid
         print kill
@@ -372,9 +374,14 @@ class StartUI(QtGui.QMainWindow):
         ifd_settings.append(str(self.ui.message_entry.text()))
         return ifd_settings
 
+def sigterm_handler(signal, frame):
+    print "Bye bye"
+    sys.exit(0)
+
 
 if __name__ == "__main__":
     # Initialize Main Variables
+    signal.signal(signal.SIGTERM, sigterm_handler)
     project_path = os.path.dirname(os.path.realpath(__file__))
     settings = config.Settings()
     user = settings.user

@@ -9,7 +9,6 @@ sys.path.insert(0, test_path)
 from render_manager import Database
 import config
 
-
 class TestRenderDatabase(unittest.TestCase):
     '''Tests for the Render Manager Database'''
 
@@ -18,9 +17,10 @@ class TestRenderDatabase(unittest.TestCase):
         self.settings = config.Settings()
         self.database_path = self.settings.render_database_file
         self.render_db = Database(self.database_path)
-        self.default_id = [1, "comp-001", "Available", "None", "None", 0, 0]
+        self.default_id = [1, "comp-001", "Available", "None", "None", "None",
+                           "None", "None"]
         self.header = ["id", "client", "status", "host", "ifd", "start_time",
-                      "progress"]
+                      "progress", "pids"]
         self.valid_status = ["Available", "Disabled", "Rendering"]
 
     def test_header_integrity(self):
@@ -30,7 +30,7 @@ class TestRenderDatabase(unittest.TestCase):
     def test_get_row(self):
         '''Test that a row has a length of 7'''
         row = self.render_db.get_row(1)
-        self.assertEqual(len(row), 7)
+        self.assertEqual(len(row), 8)
 
     def test_get_client(self):
         '''Test that the client ID is a string'''
@@ -79,7 +79,7 @@ class TestRenderDatabase(unittest.TestCase):
             self.assertIn(host, clients)
 
     def test_all_get_ifd(self):
-        '''Test that all IFds are a path or none'''
+        '''Test that all IFDs are a path or none'''
         for i, row in enumerate(self.render_db.data):
             if i == 0: continue
             ifd = self.render_db.get_ifd(i)

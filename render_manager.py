@@ -34,7 +34,7 @@ class Database(object):
                 writer.writerow(row)
 
     def reset_to_defaults(self):
-        '''Reset every row to [id, client, "Availble", 0, 0, 0 ,0]'''
+        '''Reset every row to [id, client, "Availble", 0, 0, 0 ,0, 0]'''
         for i, row in enumerate(self.data):
             if i == 0: continue
             self.clean(i)
@@ -93,6 +93,13 @@ class Database(object):
         '''Return the progress of a row based on id'''
         return float(self.data[id][6])
 
+    def get_pids(self, id):
+        '''Return the pids related to the render of a row based on id'''
+        if self.data[id][7] == "None":
+            return None
+        else:
+            return self.data[id][7].split("-")
+
     def disable(self, id):
         '''Set status of a single client to Disabled'''
         if id == 0: return
@@ -130,6 +137,30 @@ class Database(object):
         if id == 0: return
         self.data[id][6] = new_progress
 
+    def add_pid(self, id, pid):
+        '''Add the PID of a process being used by a single client'''
+        if id == 0: return
+        pids = self.get_pids(id)
+        if pids == None:
+            self.data[id][7] = str(pid)
+        else:
+            if pid not in pids:
+                pids.append(pid)
+                self.data[id][7] = "-".join(pids)
+
+    def remove_pid(self, id, pid):
+        '''Remove the PID of a process being used by a single client''' 
+        if id == 0: return
+        pids = self.get_pids(id)
+        if pids == None:
+            return
+        else:
+            if pid not in pids:
+                return
+            else:
+                pids.remove(pid)
+                self.data[id][7] = "-".join(pids)
+
     def clean(self, id):
         '''Reset a single row'''
         if id == 0: return
@@ -138,6 +169,7 @@ class Database(object):
         self.data[id][4] = "None"
         self.data[id][5] = "None"
         self.data[id][6] = "None"
+        self.data[id][7] = "None"
 
 
 if __name__ == "__main__":
@@ -180,4 +212,4 @@ if __name__ == "__main__":
         print test_db.data
         print test_db.header
 
-sys.exit()
+    sys.exit()
