@@ -549,10 +549,14 @@ On ~/.bashrc make sure you have:
 - Global Settings config
 
 
-#!/bin/sh
+# --------------------------------------- .bashrc Render Farm Settings ----------------------------
+#Remove SSH Identities
+ssh-add -D &> /dev/null
+#Readd SSH Identity
+ssh-add &> /dev/null
+#Add python env var
 export PYTHONPATH="/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/ext_modules"
-python /LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/main.py
-exit
+export LD_LIBRARY_PATH="/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/ext_modules/appindicator"
 
 
 '''

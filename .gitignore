@@ -13,3 +13,4 @@ ssh_config/keys
 ssh_config/network_deploy/ssh_known_hosts
 ssh_config/network_deploy/all_ip
 ssh_config/network_deploy/test_ip
+ssh_config/.bashrc
