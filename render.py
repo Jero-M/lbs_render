@@ -46,10 +46,13 @@ def start_process(parent_pid, host, client, client_id, render_engine_script,
                   ]
     cmd_args = " ".join(cmd_args)
 
+    echo_client = "echo Rendering on {0}".format(client)
+
     terminal_cmd = ("gnome-terminal -e 'bash -c"
-                  + " \"{0} {1}; exec bash\"'".format(
-                                                        render_engine_script,
-                                                        cmd_args))
+                  + " \"{0}; {1} {2}; exec bash\"'".format(
+                                                          echo_client,
+                                                          render_engine_script,
+                                                          cmd_args))
     p = subprocess.Popen(shlex.split(terminal_cmd), stdout=subprocess.PIPE)
     return p.pid
 

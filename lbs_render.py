@@ -12,7 +12,7 @@ import appindicator
 
 class AppIndicatorExample:
     def __init__(self):
-        self.ind = appindicator.Indicator("example-simple-client",
+        self.ind = appindicator.Indicator("lbs-render",
                                     "indicator-messages",
                                     appindicator.CATEGORY_APPLICATION_STATUS)
         self.ind.set_status (appindicator.STATUS_ACTIVE)

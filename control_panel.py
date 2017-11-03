@@ -215,7 +215,9 @@ class StartUI(QtGui.QMainWindow):
             return
         #Gather selected clients
         selected_clients_ids = [int(entry) for entry in self.render_list_ids
-                               if self.render_list_items[entry].checkState(6)]
+                               if self.render_list_items[entry].checkState(6)
+                               and self.render_list_items[entry].text(1)
+                               == "Available"]
         #If no clients were selected then return
         if len(selected_clients_ids) == 0:
             print "No clients selected"
@@ -283,6 +285,8 @@ class StartUI(QtGui.QMainWindow):
         self.render_db.open_csv(settings.render_database_file)
         child_processes = self.render_db.get_pids(target_id)
         client = self.render_db.get_client(target_id)
+        # tree_list = self.render_list_items[client]
+        # tree_list.setCheckState(6, QtCore.Qt.Unchecked)
 
         #Stop the local processes that are sending the renders
         if child_processes != None:
@@ -549,10 +553,14 @@ On ~/.bashrc make sure you have:
 - Global Settings config
 
 
-#!/bin/sh
+# --------------------------------------- .bashrc Render Farm Settings ----------------------------
+#Remove SSH Identities
+ssh-add -D &> /dev/null
+#Readd SSH Identity
+ssh-add &> /dev/null
+#Add python env var
 export PYTHONPATH="/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/ext_modules"
-python /LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/main.py
-exit
+export LD_LIBRARY_PATH="/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/ext_modules/appindicator"
 
 
 '''
