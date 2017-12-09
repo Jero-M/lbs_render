@@ -155,11 +155,7 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 3, "grey")
             self.change_text_color(row, 4, "grey")
             self.change_text_color(row, 5, "grey")
-            user_rendering = str(row.text(2)).partition("@")[0]
-            if user == user_rendering:
-                self.stop_buttons[id].setEnabled(True)
-            else:
-                self.stop_buttons[id].setEnabled(False)
+            self.stop_buttons[id].setEnabled(True)
             row.setDisabled(True)
 
     def format_tree_items(self, item):
@@ -427,6 +423,7 @@ if __name__ == "__main__":
 '''
 Priority List
 0- Stop button functionality
+1- Store PID of every render in the render_database
 1b- Opening the Control Panel should load the render_processes PIDs from the render_database
 3- Notify client of render
 4- Turn UI controls into render arguments
@@ -451,9 +448,6 @@ Priority List
 19- Network Config UI
 
 20- Arnold Support
-
-BUGS
-1- Render single frame not working
 
 
 Notify client? Run script that checks if db is changed. If its own hostname
