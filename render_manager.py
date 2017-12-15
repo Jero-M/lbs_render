@@ -1,12 +1,82 @@
 #!/usr/bin/python
-import csv
-import os
+import sqlite3
 import sys
 
 import config
 
+def create_database(db_name, data):
+    try:
+        delete_table(db_name)
+    except:
+        pass
+    create_table(db_name)
+    insert_clients(db_name, data)
+
+def create_table(db_name):
+    with sqlite3.connect(db_name) as db:
+        cursor = db.cursor()
+        cursor.execute("""CREATE TABLE Clients
+                         (id INTEGER PRIMARY KEY,
+                          client TEXT,
+                          status TEXT,
+                          host TEXT,
+                          ifd TEXT,
+                          start_time TEXT,
+                          progress TEXT,
+                          pids TEXT)""")
+        db.commit()
+
+def delete_table(db_name):
+    with sqlite3.connect(db_name) as db:
+        cursor = db.cursor()
+        cursor.execute("""DROP TABLE Clients""")
+        db.commit()
+
+def insert_clients(db_name, values):
+    sql = """INSERT INTO Clients
+                                (client,
+                                status,
+                                host,
+                                ifd,
+                                start_time,
+                                progress,
+                                pids)
+                                VALUES (?, ?, ?, ?, ?, ?, ?)"""
+
+    with sqlite3.connect(db_name) as db:
+        cursor = db.cursor()
+        cursor.executemany(sql, values)
+        db.commit()
+
+def reset_to_defaults():
+    pass
+
+def disable_all(db_name):
+    # ids = range(1, max_rows + 1)
+    sql = """UPDATE Clients SET status=?"""
+
+    with sqlite3.connect(db_name) as db:
+        cursor = db.cursor()
+        cursor.execute(sql, ("Disabled",))
+        db.commit()
+
+def enable_all(db_name):
+    sql = """UPDATE Clients SET status=?"""
+
+    with sqlite3.connect(db_name) as db:
+        cursor = db.cursor()
+        cursor.execute(sql, ("Available",))
+        db.commit()
+
+def 
+
+
+
+
+
+
 class Database(object):
-    '''Open a render_clients database csv and control it'''
+    '''Open a SQLite Database and control it'''
 
     def __init__(self, file_path):
         '''Open the file and store the path, header and data'''
@@ -15,7 +85,7 @@ class Database(object):
         self.header = []
         self.open_csv(self.path)
 
-    def open_csv(self, file_path):
+    def create_table(self, file_path):
         '''Open a new csv file'''
         self.path = file_path
         self.data = []
@@ -186,41 +256,52 @@ class Database(object):
 if __name__ == "__main__":
     settings = config.Settings()
     database_path = settings.render_database_file
+    database_rows = []
+    for client in settings.clients:
+        database_rows.append((client, "Available", "None",
+                              "None", "None", "None", "None"))
+    
+    # create_database(database_path, database_rows)
+    enable_all(database_path)
 
-    try:
-        client_id = int(sys.argv[1])
-        status = sys.argv[2]
-        host = sys.argv[3]
-        file = sys.argv[4]
-        time = sys.argv[5]
-        progress = sys.argv[6]
 
-        render_db = Database(database_path)
-        if status != "None":
-            if status == "Available":
-                render_db.enable(client_id)
-            elif status == "Rendering":
-                render_db.busy(client_id)
-            else:
-                render_db.disable(client_id)
 
-        if host != "None":
-            render_db.set_host(client_id, host)
-        if file != "None":
-            render_db.set_ifd(client_id, file)
-        if time != "None":
-            render_db.set_start_time(client_id, time)
-        if progress != "None":
-            render_db.set_progress(client_id, progress)
-        render_db.save_csv()
 
-    except:
-        test_db = Database(database_path)
-        #Uncomment for resetting database
-        # test_db.reset_to_defaults()
-        # test_db.save_csv()
-        print database_path
-        print test_db.data
-        print test_db.header
+
+    # try:
+    #     client_id = int(sys.argv[1])
+    #     status = sys.argv[2]
+    #     host = sys.argv[3]
+    #     file = sys.argv[4]
+    #     time = sys.argv[5]
+    #     progress = sys.argv[6]
+
+    #     render_db = Database(database_path)
+    #     if status != "None":
+    #         if status == "Available":
+    #             render_db.enable(client_id)
+    #         elif status == "Rendering":
+    #             render_db.busy(client_id)
+    #         else:
+    #             render_db.disable(client_id)
+
+    #     if host != "None":
+    #         render_db.set_host(client_id, host)
+    #     if file != "None":
+    #         render_db.set_ifd(client_id, file)
+    #     if time != "None":
+    #         render_db.set_start_time(client_id, time)
+    #     if progress != "None":
+    #         render_db.set_progress(client_id, progress)
+    #     render_db.save_csv()
+
+    # except:
+    #     test_db = Database(database_path)
+    #     #Uncomment for resetting database
+    #     # test_db.reset_to_defaults()
+    #     # test_db.save_csv()
+    #     print database_path
+    #     print test_db.data
+    #     print test_db.header
 
     sys.exit()

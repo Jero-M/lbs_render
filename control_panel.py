@@ -428,6 +428,8 @@ if __name__ == "__main__":
 Priority List
 0- Stop button functionality
 1b- Opening the Control Panel should load the render_processes PIDs from the render_database
+2- SQLite Implementation
+2a- Date in ISO 8601 format
 3- Notify client of render
 4- Turn UI controls into render arguments
 5- Verbosity off should prevent terminal from opening
