@@ -289,17 +289,36 @@ if __name__ == "__main__":
     for client in settings.clients:
         database_rows.append((client, "Available", "None",
                               "None", "None", "None", "None"))
-    
-    # create_database(database_path, database_rows)
-    # get_available_clients(database_path)
-    # disable_all(database_path)
-    # enable(database_path, 3)
-    # print get_pids(database_path, 10)
-    # busy(database_path, 3)
-    # set_progress(database_path, 1, "None")
-    # remove_pid(database_path, 2, 2345)
-    # clean(database_path, 4)
-    # print get_all_clients(database_path)
-    reset_to_defaults(database_path)
+
+    try:
+        client_id = int(sys.argv[1])
+        status = sys.argv[2]
+        host = sys.argv[3]
+        file = sys.argv[4]
+        time = sys.argv[5]
+        progress = sys.argv[6]
+
+        if status != "None":
+            if status == "Available":
+                enable(database_path, client_id)
+            elif status == "Rendering":
+                busy(database_path, client_id)
+            else:
+                disable(database_path, client_id)
+
+        if host != "None":
+            set_host(database_path, client_id, host)
+        if file != "None":
+            set_ifd(database_path, client_id, file)
+        if time != "None":
+            set_start_time(database_path, client_id, time)
+        if progress != "None":
+            set_progress(database_path, client_id, progress)
+
+    except:
+        pass
+        #Uncomment for resetting database
+        # create_database(database_path, database_rows)
+        # reset_to_defaults(database_path)
 
     sys.exit()

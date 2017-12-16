@@ -37,9 +37,7 @@ except:
 
 def sigterm_handler(signal, frame):
     ssh.ssh_close(ssh_connection)
-    render_db = render_manager.Database(database_path)
-    render_db.clean(client_id)
-    render_db.save_csv()
+    render_manager.clean(database_path, client_id)
     sys.exit(0)
 
 signal.signal(signal.SIGTERM, sigterm_handler)
@@ -55,13 +53,9 @@ ssh_connection = ssh.ssh_start(client, user)
 child_pID = subprocess.check_output(["pgrep", "-P", str(pID_instance)])
 
 #Add PID, Parent PID and SSH PID to database
-render_db = render_manager.Database(database_path)
-render_db.add_pid(client_id, pID_instance)
-render_db.add_pid(client_id, parent_pID)
-render_db.add_pid(client_id, child_pID)
-render_db.save_csv()
-
-
+render_manager.add_pid(database_path, client_id, pID_instance)
+render_manager.add_pid(database_path, client_id, parent_pID)
+render_manager.add_pid(database_path, client_id, child_pID)
 
 #Send command for every frame
 for i, frame in enumerate(render_files):
@@ -81,6 +75,4 @@ for i, frame in enumerate(render_files):
 ssh.ssh_close(ssh_connection)
 
 #Update the Render Database
-render_db.open_csv(database_path)
-render_db.clean(client_id)
-render_db.save_csv()
+render_manager.clean(database_path, client_id)

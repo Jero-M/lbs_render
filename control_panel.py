@@ -36,7 +36,7 @@ class StartUI(QtGui.QMainWindow):
         self.load_default_ui_settings()
 
         #Start the render database
-        self.render_db = render_manager.Database(settings.render_database_file)
+        self.database_path = settings.render_database_file
 
         #IFD Sequence
         self.ifd_seq = ""
@@ -78,8 +78,9 @@ class StartUI(QtGui.QMainWindow):
     def create_tree_list(self):
         '''Create the QTreeWidgetItem for every row and store it in a
         dictionary'''
-        self.render_db.open_csv(settings.render_database_file)
-        for row in self.render_db.data[1:]:
+        clients = render_manager.get_all_clients(self.database_path)
+        for id in range(1, len(clients) + 1):
+            row = render_manager.get_row(self.database_path, id)
             #Create tree list
             tree_list = QtGui.QTreeWidgetItem(self.ui.render_list)
             self.render_list_ids.append(row[0])
@@ -111,8 +112,9 @@ class StartUI(QtGui.QMainWindow):
     def update_tree_list(self):
         '''Update the database by accessing the QTreeWidgetItem objects and
         editing the text''' 
-        self.render_db.open_csv(settings.render_database_file)
-        for row in self.render_db.data[1:]:
+        clients = render_manager.get_all_clients(self.database_path)
+        for id in range(1, len(clients) + 1):
+            row = render_manager.get_row(self.database_path, id)
             tree_list = self.render_list_items[row[0]]
             tree_list.setText(0, self.format_tree_items(row[1]))
             tree_list.setText(1, self.format_tree_items(row[2]))
@@ -250,20 +252,18 @@ class StartUI(QtGui.QMainWindow):
                                                 selected_clients_ids,
                                                 frame_range)
         #Update Render Database
-        self.render_db.open_csv(settings.render_database_file)
         for client in selected_clients_ids:
-            self.render_db.busy(client)
-            self.render_db.set_host(client, user + "@" + hostname)
-            self.render_db.set_ifd(client, file_entry)
-            self.render_db.set_start_time(client, datetime.today().strftime(
+            render_manager.busy(self.database_path, client)
+            render_manager.set_host(self.database_path, client, user + "@" + hostname)
+            render_manager.set_ifd(self.database_path, client, file_entry)
+            render_manager.set_start_time(self.database_path, client, datetime.today().strftime(
                                                          "%d.%m.%y %H:%M:%S"))
-            self.render_db.set_progress(client, "0/{0}".format(str(len(
+            render_manager.set_progress(self.database_path, client, "0/{0}".format(str(len(
                                                  frames_per_client[client]))))
-        self.render_db.save_csv()
 
         #Start a new process for every client
         for client in selected_clients_ids:
-            client_name = self.render_db.get_client(client) + ".local"
+            client_name = render_manager.get_client(self.database_path, client) + ".local"
             render_files = [frames_seq[render_file] for render_file in
                                                     frames_per_client[client]]
             render_pid = render.start_process(pID_instance,
@@ -278,17 +278,14 @@ class StartUI(QtGui.QMainWindow):
                                               render_files,
                                              )
             # Set the Gnome-terminal PID in the database
-            self.render_db.open_csv(settings.render_database_file)
-            self.render_db.add_pid(client, render_pid)
-            self.render_db.save_csv()
+            render_manager.add_pid(self.database_path, client, render_pid)
 
     def stop_render(self):
         '''Stop the current render'''
         target = self.sender()
         target_id = int(target.row_id)
-        self.render_db.open_csv(settings.render_database_file)
-        child_processes = self.render_db.get_pids(target_id)
-        client = self.render_db.get_client(target_id)
+        child_processes = render_manager.get_pids(self.database_path, target_id)
+        client = render_manager.get_client(self.database_path, target_id)
         # tree_list = self.render_list_items[client]
         # tree_list.setCheckState(6, QtCore.Qt.Unchecked)
 
@@ -300,9 +297,7 @@ class StartUI(QtGui.QMainWindow):
                 except:
                     continue
 
-        self.render_db.open_csv(settings.render_database_file)
-        self.render_db.clean(target_id)
-        self.render_db.save_csv()
+        render_manager.clean(self.database_path, target_id)
 
         #Stop the remote mantra-bin process / Seems not necessary
         # kill_cmd = "ssh {0}@{1}.local killall -9 mantra-bin".format(client, user)
