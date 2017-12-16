@@ -77,6 +77,14 @@ def enable_all(db_name):
         cursor.execute(sql, ("Available",))
         db.commit()
 
+def get_all_clients(db_name):
+    '''Return a list of all the clients'''
+    with sqlite3.connect(db_name) as db:
+        cursor = db.cursor()
+        cursor.execute("""SELECT client FROM Clients""")
+        clients = [str(x[0]) for x in cursor.fetchall() ]
+        return clients
+
 def get_available_clients(db_name):
     '''Return a list of all the available clients'''
     with sqlite3.connect(db_name) as db:
@@ -91,7 +99,7 @@ def get_row(db_name, id):
     with sqlite3.connect(db_name) as db:
         cursor = db.cursor()
         cursor.execute("""SELECT * FROM CLIENTS WHERE id=?""", (id,))
-        row = cursor.fetchone()
+        row = [str(x) for x in cursor.fetchone()]
         return row
 
 def get_id(db_name, host):
@@ -286,10 +294,12 @@ if __name__ == "__main__":
     # get_available_clients(database_path)
     # disable_all(database_path)
     # enable(database_path, 3)
-    print get_pids(database_path, 10)
+    # print get_pids(database_path, 10)
     # busy(database_path, 3)
     # set_progress(database_path, 1, "None")
     # remove_pid(database_path, 2, 2345)
-    # clean(database_path, 2)
+    # clean(database_path, 4)
+    # print get_all_clients(database_path)
+    reset_to_defaults(database_path)
 
     sys.exit()
