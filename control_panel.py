@@ -2,8 +2,6 @@
 import os
 import sys
 import signal
-import subprocess
-import shlex
 from platform import node
 from os.path import isfile
 from datetime import datetime
@@ -19,9 +17,9 @@ import filecheck
 import render
 
 
-ui_colors = {"red":(150, 60, 60), "green":(60, 150, 69),
-             "orange":(196, 99, 9), "grey":(140, 140, 140),
-             "black":(76,76,76)}
+ui_colors = {"red": (150, 60, 60), "green": (60, 150, 69),
+             "orange": (196, 99, 9), "grey": (140, 140, 140),
+             "black": (76, 76, 76)}
 
 
 class StartUI(QtGui.QMainWindow):
@@ -35,26 +33,26 @@ class StartUI(QtGui.QMainWindow):
         self.watcher = QtCore.QFileSystemWatcher(self)
         self.load_default_ui_settings()
 
-        #Start the render database
+        # Start the render database
         self.database_path = settings.render_database_file
 
-        #IFD Sequence
+        # IFD Sequence
         self.ifd_seq = ""
 
-        #Set tree columns width
-        self.ui.render_list.setColumnWidth(0,115)
-        self.ui.render_list.setColumnWidth(1,90)
-        self.ui.render_list.setColumnWidth(2,120)
-        self.ui.render_list.setColumnWidth(3,120)
-        self.ui.render_list.setColumnWidth(4,80)
-        self.ui.render_list.setColumnWidth(5,70)
-        self.ui.render_list.setColumnWidth(6,60)
-        self.ui.render_list.setColumnWidth(7,60)
+        # Set tree columns width
+        self.ui.render_list.setColumnWidth(0, 115)
+        self.ui.render_list.setColumnWidth(1, 90)
+        self.ui.render_list.setColumnWidth(2, 120)
+        self.ui.render_list.setColumnWidth(3, 120)
+        self.ui.render_list.setColumnWidth(4, 80)
+        self.ui.render_list.setColumnWidth(5, 70)
+        self.ui.render_list.setColumnWidth(6, 60)
+        self.ui.render_list.setColumnWidth(7, 60)
         self.render_list_items = {}
         self.render_list_ids = []
         self.stop_buttons = {}
 
-        #Signal Handling
+        # Signal Handling
         QtCore.QObject.connect(self.ui.browse_button,
                                QtCore.SIGNAL("clicked()"),
                                self.file_dialog)
@@ -71,7 +69,7 @@ class StartUI(QtGui.QMainWindow):
                                QtCore.SIGNAL("textChanged(const QString&)"),
                                self.verify_file_input)
 
-        #Automatically load the database
+        # Automatically load the database
         self.watcher.addPath(settings.render_database_file)
         self.create_tree_list()
 
@@ -81,12 +79,12 @@ class StartUI(QtGui.QMainWindow):
         clients = render_manager.get_all_clients(self.database_path)
         for id in range(1, len(clients) + 1):
             row = render_manager.get_row(self.database_path, id)
-            #Create tree list
+            # Create tree list
             tree_list = QtGui.QTreeWidgetItem(self.ui.render_list)
             self.render_list_ids.append(row[0])
             self.render_list_items[row[0]] = tree_list
 
-            #Set every coulmns text
+            # Set every coulmns text
             tree_list.setText(0, self.format_tree_items(row[1]))
             tree_list.setText(1, self.format_tree_items(row[2]))
             tree_list.setText(2, self.format_tree_items(row[3]))
@@ -94,24 +92,24 @@ class StartUI(QtGui.QMainWindow):
             tree_list.setText(4, self.format_tree_items(row[5]))
             tree_list.setText(5, self.format_tree_items(row[6]))
             tree_list.setCheckState(6, QtCore.Qt.Unchecked)
-            #Create stop button
+            # Create stop button
             stop_button = QtGui.QPushButton("Stop", self)
-            #Store row ID into the stop button
+            # Store row ID into the stop button
             stop_button.row_id = row[0]
-            #Group all buttons in a dictionary
+            # Group all buttons in a dictionary
             self.stop_buttons[row[0]] = stop_button
-            #Button size
+            # Button size
             stop_button.setMinimumSize(QtCore.QSize(80, 20))
             stop_button.setMaximumSize(QtCore.QSize(80, 20))
             self.ui.render_list.setItemWidget(tree_list, 7, stop_button)
-            #Connect button to function
+            # Connect button to function
             stop_button.clicked.connect(self.stop_render)
-            #Fromat text
+            # Fromat text
             self.tree_color_formatting(tree_list, row[0])
 
     def update_tree_list(self):
         '''Update the database by accessing the QTreeWidgetItem objects and
-        editing the text''' 
+        editing the text'''
         clients = render_manager.get_all_clients(self.database_path)
         for id in range(1, len(clients) + 1):
             row = render_manager.get_row(self.database_path, id)
@@ -124,7 +122,8 @@ class StartUI(QtGui.QMainWindow):
             tree_list.setText(5, self.format_tree_items(row[6]))
             status = tree_list.text(1)
             current_host = str(tree_list.text(2))
-            if status == "Disabled" or status == "Rendering" and user + "@" + hostname != current_host:
+            if (status == "Disabled" or status == "Rendering" and
+               user + "@" + hostname != current_host):
                 tree_list.setCheckState(6, QtCore.Qt.Unchecked)
             self.tree_color_formatting(tree_list, row[0])
 
@@ -140,7 +139,7 @@ class StartUI(QtGui.QMainWindow):
             self.change_text_color(row, 5, "grey")
             row.setDisabled(True)
             self.stop_buttons[id].setEnabled(False)
-            #Uncheck select box
+            # Uncheck select box
         elif status == "Available":
             self.change_text_color(row, 0, "black")
             self.change_text_color(row, 1, "green")
@@ -192,9 +191,11 @@ class StartUI(QtGui.QMainWindow):
 
     def file_dialog(self):
         '''Open a file dialog'''
-        self.filename = QtGui.QFileDialog.getOpenFileName(self,
+        self.filename = QtGui.QFileDialog.getOpenFileName(
+                        self,
                         "Open IFD file", settings.default_dir,
-                        "IFD files ({0})".format(settings.ifd_extensions))
+                        "IFD files ({0})".format(settings.ifd_extensions)
+                        )
         if isfile(self.filename):
             self.ui.file_path_entry.setText(self.filename)
 
@@ -212,23 +213,23 @@ class StartUI(QtGui.QMainWindow):
 
     def gather_render_data(self):
         '''Gather all the data from the UI and if valid begin rendering'''
-        #Check if user is allowed
-        #Check if IFD exists
+        # Check if user is allowed
+        # Check if IFD exists
         file_entry = str(self.ui.file_path_entry.text())
         if not os.path.isfile(file_entry):
             self.disable_render()
             print "File does not exist"
             return
-        #Gather selected clients
+        # Gather selected clients
         selected_clients_ids = [int(entry) for entry in self.render_list_ids
                                if self.render_list_items[entry].checkState(6)
-                               and self.render_list_items[entry].text(1)
-                               == "Available"]
-        #If no clients were selected then return
+                               and self.render_list_items[entry].text(1) ==
+                               "Available"]
+        # If no clients were selected then return
         if len(selected_clients_ids) == 0:
             print "No clients selected"
             return
-        #Gather Render Data
+        # Gather Render Data
         project_path = os.path.dirname(os.path.realpath(__file__)) + "/"
         render_engine_script = project_path + "mantra.py"
         render_engine_path = settings.get_mantra_path(
@@ -239,11 +240,11 @@ class StartUI(QtGui.QMainWindow):
         log_file = "text.txt"
         render_args = "-v"
 
-        #Divide frames per clients
-        #Create a list based on input start frame, end frames and step
+        # Divide frames per clients
+        # Create a list based on input start frame, end frames and step
         frame_range = range(int(self.ui.start_frame_entry.text()),
-                             int(self.ui.end_frame_entry.text()) + 1,
-                             int(self.ui.steps_entry.text()))
+                            int(self.ui.end_frame_entry.text()) + 1,
+                            int(self.ui.steps_entry.text()))
         frames_seq = render.map_frames_to_files(frame_range,
                                                 self.ifd_seq.filename_head,
                                                 self.ifd_seq.seq_padding,
@@ -251,19 +252,25 @@ class StartUI(QtGui.QMainWindow):
         frames_per_client = render.assign_frames_to_clients(
                                                 selected_clients_ids,
                                                 frame_range)
-        #Update Render Database
+        # Update Render Database
         for client in selected_clients_ids:
             render_manager.busy(self.database_path, client)
-            render_manager.set_host(self.database_path, client, user + "@" + hostname)
+            render_manager.set_host(self.database_path,
+                                    client, user + "@" + hostname)
             render_manager.set_ifd(self.database_path, client, file_entry)
-            render_manager.set_start_time(self.database_path, client, datetime.today().strftime(
+            render_manager.set_start_time(self.database_path,
+                                          client,
+                                          datetime.today().strftime(
                                                          "%d.%m.%y %H:%M:%S"))
-            render_manager.set_progress(self.database_path, client, "0/{0}".format(str(len(
+            render_manager.set_progress(self.database_path,
+                                        client,
+                                        "0/{0}".format(str(len(
                                                  frames_per_client[client]))))
 
-        #Start a new process for every client
+        # Start a new process for every client
         for client in selected_clients_ids:
-            client_name = render_manager.get_client(self.database_path, client) + ".local"
+            client_name = render_manager.get_client(self.database_path,
+                                                    client) + ".local"
             render_files = [frames_seq[render_file] for render_file in
                                                     frames_per_client[client]]
             render_pid = render.start_process(pID_instance,
@@ -275,8 +282,8 @@ class StartUI(QtGui.QMainWindow):
                                               log_file,
                                               render_args,
                                               render_files_path,
-                                              render_files,
-                                             )
+                                              render_files,)
+
             # Set the Gnome-terminal PID in the database
             render_manager.add_pid(self.database_path, client, render_pid)
 
@@ -289,7 +296,7 @@ class StartUI(QtGui.QMainWindow):
         # tree_list = self.render_list_items[client]
         # tree_list.setCheckState(6, QtCore.Qt.Unchecked)
 
-        #Stop the local processes that are sending the renders
+        # Stop the local processes that are sending the renders
         if child_processes != None:
             for process in child_processes:
                 try:
@@ -299,8 +306,9 @@ class StartUI(QtGui.QMainWindow):
 
         render_manager.clean(self.database_path, target_id)
 
-        #Stop the remote mantra-bin process / Seems not necessary
-        # kill_cmd = "ssh {0}@{1}.local killall -9 mantra-bin".format(client, user)
+        # Stop the remote mantra-bin process / Seems not necessary
+        # kill_cmd = "ssh {0}@{1}.local killall -9 mantra-bin".format(client,
+        # user)
         # subprocess.call(shlex.split(kill_cmd))
 
     def enable_render(self):
@@ -326,15 +334,15 @@ class StartUI(QtGui.QMainWindow):
 
     def set_steps(self, step):
         '''Set the steps'''
-        self.ui.steps_entry.setText(str(step))        
+        self.ui.steps_entry.setText(str(step))
 
     def set_processors(self, amount):
         '''Set the amount of processors'''
-        self.ui.processors_entry.setText(str(amount))  
+        self.ui.processors_entry.setText(str(amount))
 
     def set_verbose(self, level):
         '''Set the verbosity level'''
-        self.ui.verbose_entry.setText(str(level))  
+        self.ui.verbose_entry.setText(str(level))
 
     def enable_vex_profiling(self, flag):
         '''Enable or disable vex profiling'''
@@ -394,21 +402,21 @@ if __name__ == "__main__":
     pID_instance = os.getpid()
     cpus = cpu_count()
 
-    #Error messages
+    # Error messages
     error_messages = {
-                      0:"No Error",
-                      1:"Invalid start frame",
-                      2:"Invalid end frame",
-                      3:"Invalid processors number",
-                      4:"Invalid verbose level, use 0-9",
-                      5:str("Invalid processors number, there's only "
+                      0: "No Error",
+                      1: "Invalid start frame",
+                      2: "Invalid end frame",
+                      3: "Invalid processors number",
+                      4: "Invalid verbose level, use 0-9",
+                      5: str("Invalid processors number, there's only "
                         + str(cpus) + " processors"),
-                      6:"No IFD file selected",
-                      7:"Invalid step number",
-                      8:"Invalid client",
-                      9:str("You can only render from your own computer. "
+                      6: "No IFD file selected",
+                      7: "Invalid step number",
+                      8: "Invalid client",
+                      9: str("You can only render from your own computer. "
                        + "Render cancelled. Try again from your own computer"),
-                     10:"IFD file does not exist",
+                     10: "IFD file does not exist",
                      }
 
     # Create the GUI
@@ -478,7 +486,7 @@ is set to rendering, then run a command.
 1 - Check for file integrity
 
 - SSH -
-1 - 
+1 -
 
 - Log Files -
 1 - Write to json
@@ -498,7 +506,6 @@ is set to rendering, then run a command.
       v- Update render database to reserve clients
       vi- Start process for every client
       vii- SSH into client
-      
 
 - SSH Config -
 - Get all network hosts and query their sshd_config
@@ -564,6 +571,5 @@ ssh-add &> /dev/null
 #Add python env var
 export PYTHONPATH="/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/ext_modules"
 export LD_LIBRARY_PATH="/LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE/lbs_render/ext_modules/appindicator"
-
 
 '''

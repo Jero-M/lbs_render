@@ -1,5 +1,5 @@
 All Clients = ./tests/clients_file_test.csv
-Render Database = ./database/render_clients.csv
+Render Database = ./database/render_clients.db
 Houdini Install Directory = /LOSTBOYS/LIBRARY/TECH_CONFIG/SOFTWARE
 Houdini Versions = hfs12.0, hfs13
 Mantra Path = $HOU_INSTALL$/$HOU_VERSION$/bin/mantra

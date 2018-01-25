@@ -5,6 +5,10 @@ set IPADDY [lindex $argv 1]
 set RUNSCRIPT [lindex $argv 2]
 
 spawn ssh lbsstaff@$IPADDY
+expect "yes/no"
+send "yes\r"
+expect "$ "
+
 expect "assword"
 send "$PASSW\r"
 expect "$ "
