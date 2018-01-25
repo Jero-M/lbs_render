@@ -10,13 +10,15 @@ sys.path.insert(0, project_path)
 from filecheck import RenderFile
 import config
 
+
 test_files = ["/pig_v001.0001.ifd.gz",
               "/pig_v001.0002.ifd",
               "/pig_v001_0006.ifd",
               "/pig_v002_fxtd.0006.ifd.sc",
               "/pig_v002_fxtd.0006.ifd",
               "/pig_v003_0001.ifd",
-             ]
+              ]
+
 
 class TestRenderFileCheck(unittest.TestCase):
     '''Tests for the filecheck.RenderFile class'''
@@ -41,7 +43,7 @@ class TestRenderFileCheck(unittest.TestCase):
     def test_get_directory(self):
         '''Test get directory method matches the test file dir'''
         for i, case in enumerate(self.case_list):
-            path = test_dir  + test_files[i]
+            path = test_dir + test_files[i]
             self.assertEqual(test_dir, case.get_directory(path),
                             msg="{0} failed".format(case.basename))
 
@@ -55,8 +57,5 @@ class TestRenderFileCheck(unittest.TestCase):
     #     compare_basename = "render_file_v001.0001.ifd.sc"
     #     self.assertEqual(compare_basename, self.ifd.get_basename(
     #                                                           self.test_file))
-
-    
-
 
 unittest.main()

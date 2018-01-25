@@ -13,8 +13,8 @@ class Settings(object):
     def __init__(self, config_file=""):
         '''Load the default settings from the config file'''
         if config_file == "":
-            self.config_file = str(Settings.main_path
-                               + Settings.default_config_file)
+            self.config_file = str(Settings.main_path +
+                                   Settings.default_config_file)
         else:
             self.config_file = config_file
         self.config_list = []
@@ -44,11 +44,14 @@ class Settings(object):
         self.default_steps = self.get_default_ui_values("Steps")
         self.default_processors = self.get_default_ui_values("Processors")
         self.default_verbose = self.get_default_ui_values("Verbose")
-        self.default_vex_profiling = self.get_default_ui_values("VEX Profiling")
-        self.default_nan_detection = self.get_default_ui_values("NAN Detection")
+        self.default_vex_profiling = self.get_default_ui_values(
+                                                            "VEX Profiling")
+        self.default_nan_detection = self.get_default_ui_values(
+                                                            "NAN Detection")
         self.default_alfred_style = self.get_default_ui_values("Alfred Style")
         self.default_time_stamps = self.get_default_ui_values("Time Stamps")
-        self.default_verbosity_off = self.get_default_ui_values("Verbosity Off")
+        self.default_verbosity_off = self.get_default_ui_values(
+                                                            "Verbosity Off")
         self.default_delete_ifds = self.get_default_ui_values("Delete IFDs")
 
     def open_config_file(self, file_path):
@@ -59,8 +62,8 @@ class Settings(object):
             with open(self.config_file, "rb") as config:
                 self.config_list = config.readlines()
         except Exception as e:
-            print ("Error loading the config file from file"
-                  + "{0}. Error: {1}".format(file_path, e))
+            print ("Error loading the config file from file" +
+                   "{0}. Error: {1}".format(file_path, e))
 
     def load_setting(self, setting_name):
         '''Load a single setting'''
@@ -78,11 +81,12 @@ class Settings(object):
             with open(file_path, "rb") as csv_file:
                 reader = csv.reader(csv_file)
                 for i, row in enumerate(reader):
-                    if i == 0: continue
+                    if i == 0:
+                        continue
                     clients.append(row[0])
         except Exception as e:
             print ("Error loading the client list from file" +
-                  + "{0}. Error: {1}".format(file_path, e))
+                   "{0}. Error: {1}".format(file_path, e))
             return clients
         else:
             return clients
@@ -93,9 +97,10 @@ class Settings(object):
         with open(file_path, "rb") as csv_file:
             reader = csv.reader(csv_file)
             for i, row in enumerate(reader):
-                if i == 0: continue
+                if i == 0:
+                    continue
                 student_mapping[row[0]] = row[1]
-        return student_mapping   
+        return student_mapping
 
     def reload_files(self):
         '''Reload users, clients and mapping files'''
@@ -105,7 +110,8 @@ class Settings(object):
 
     def get_houdini_versions(self, versions):
         '''Return a list with the path of the houdini versions'''
-        version_list = {self.formatted_version(version.strip()):version.strip()
+        version_list = {self.formatted_version(
+                                        version.strip()): version.strip()
                         for version in versions.split(",")}
         return version_list
 
@@ -132,7 +138,7 @@ class Settings(object):
     def get_compression(self, extensions):
         '''Return a list of valid compression extensions'''
         compression = [ext.partition(".")[-1] for ext in extensions.split(" ")
-                      if "ifd" not in ext]
+                       if "ifd" not in ext]
         return compression
 
     def get_default_ui_values(self, ui_setting):
@@ -149,7 +155,7 @@ class Settings(object):
 
 if __name__ == "__main__":
     project_path = os.path.dirname(os.path.realpath(__file__))
-    settings= Settings()
+    settings = Settings()
     user = settings.user
     clients = settings.clients
     students_mapping = settings.student_mapping
@@ -174,13 +180,13 @@ if __name__ == "__main__":
     print "-----------------------"
     print "RENDER DATABASE:", render_database
     print "-----------------------"
-    print ("HOUDINI INSTALL DIRECTORY: " + houdini_dir
-           + "\n-----------------------")
-    print ("HOUDINI VERSIONS: " + ", ".join(houdini_versions)
-           + "\n-----------------------")
-    print "MANTRA PATH: " + mantra_dir + "\n-----------------------" 
-    print "IFD EXTENSIONS:", settings.ifd_extensions 
-    print "-----------------------"  
+    print ("HOUDINI INSTALL DIRECTORY: " + houdini_dir +
+           "\n-----------------------")
+    print ("HOUDINI VERSIONS: " + ", ".join(houdini_versions) +
+           "\n-----------------------")
+    print "MANTRA PATH: " + mantra_dir + "\n-----------------------"
+    print "IFD EXTENSIONS:", settings.ifd_extensions
+    print "-----------------------"
     print "IFD COMPRESSION:", settings.compression
     print "-----------------------"
     sys.exit()

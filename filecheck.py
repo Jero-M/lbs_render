@@ -17,7 +17,7 @@ class RenderFile(object):
         self.ifd_user = self.get_ifd_user(self.directory)
         self.basename = self.get_basename(self.render_file)
         self.compression = self.get_compression(self.basename)
-        self.extension = self.get_extension(self.basename)        
+        self.extension = self.get_extension(self.basename)
         self.filename = self.get_filename(self.basename)
         self.seq_obj = self.get_seq_object(self.directory, self.basename)
         self.seq_files = [obj.name for obj in self.seq_obj]
@@ -52,7 +52,7 @@ class RenderFile(object):
 
     def get_extension(self, basename):
         '''Return the extension of a basename'''
-        if self.compression == None:
+        if self.compression is None:
             extension = basename.rpartition(".")[-1]
         else:
             extension = basename.split(".")[-2]
@@ -63,7 +63,7 @@ class RenderFile(object):
            Only the name without the extension
         '''
         filename = basename.rpartition(".")[0]
-        if self.compression == None:
+        if self.compression is None:
             return filename
         else:
             return filename.rpartition(".")[0]

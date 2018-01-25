@@ -13,6 +13,7 @@ settings = config.Settings()
 database_path = settings.render_database_file
 clients = settings.clients
 
+
 def main():
     increment = 2
 

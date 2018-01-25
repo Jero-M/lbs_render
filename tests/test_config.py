@@ -31,6 +31,7 @@ config_data = ["All Clients = ./etc/clients.csv",
                "Delete IFDs = 1",
               ]
 
+
 class TestConfig(unittest.TestCase):
     '''Test the config module'''
 
@@ -72,7 +73,8 @@ class TestConfig(unittest.TestCase):
         with open(test_path + "/etc/clients.csv", "rb") as csv_file:
             reader = csv.reader(csv_file)
             for i, row in enumerate(reader):
-                if i == 0: continue
+                if i == 0:
+                    continue
                 clients.append(row[0])
         self.assertEqual(clients, self.settings.clients)
 
@@ -82,7 +84,8 @@ class TestConfig(unittest.TestCase):
         with open(test_path + "/etc/clients.csv", "rb") as csv_file:
             reader = csv.reader(csv_file)
             for i, row in enumerate(reader):
-                if i == 0: continue
+                if i == 0:
+                    continue
                 mapping[row[0]] = row[1]
         self.assertEqual(mapping, self.settings.student_mapping)
 
@@ -122,8 +125,9 @@ class TestConfig(unittest.TestCase):
         '''Test that the Mantra path exists for every version'''
         for version in self.settings.houdini_versions.keys():
             self.assertTrue(os.path.isfile(
-                            self.settings.mantra_path.replace("$HOU_VERSION$",
-                                    self.settings.houdini_versions[version])))
+                            self.settings.mantra_path.replace(
+                                "$HOU_VERSION$",
+                                self.settings.houdini_versions[version])))
 
     def test_render_client_ui(self):
         '''Test the render client ui location is valid'''
@@ -158,34 +162,36 @@ class TestConfig(unittest.TestCase):
         '''Test if reloading the config file reloads the file paths'''
         self.settings.open_config_file(test_path + "/tests/config_file_test")
         self.settings.reload_files()
-        self.assertEqual(self.settings.clients_file, test_path
-                         + "/tests/clients_file_test.csv")
+        self.assertEqual(self.settings.clients_file, test_path +
+                         "/tests/clients_file_test.csv")
 
     def test_reload_clients(self):
         '''Test if reloading clients updates the clients list'''
         self.settings.open_config_file(test_path + "/tests/config_file_test")
         self.settings.reload_files()
         clients = []
-        with open(test_path
-                  + "/tests/clients_file_test.csv", "rb") as csv_file:
+        with open(test_path +
+                  "/tests/clients_file_test.csv", "rb") as csv_file:
             reader = csv.reader(csv_file)
             for i, row in enumerate(reader):
-                if i == 0: continue
+                if i == 0:
+                    continue
                 clients.append(row[0])
         self.assertEqual(clients, self.settings.clients)
 
-    def test_student_mapping(self):
-        '''Test if reloading the mappings updates the mapping dictionary'''
-        self.settings.open_config_file(test_path + "/tests/config_file_test")
-        self.settings.reload_files()
-        mapping = {}
-        with open(test_path
-                  + "/tests/clients_file_test.csv", "rb") as csv_file:
-            reader = csv.reader(csv_file)
-            for i, row in enumerate(reader):
-                if i == 0: continue
-                mapping[row[0]] = row[1]
-        self.assertEqual(mapping, self.settings.student_mapping)
+
+    # def test_student_mapping(self):
+    #     '''Test if reloading the mappings updates the mapping dictionary'''
+    #     self.settings.open_config_file(test_path + "/tests/config_file_test")
+    #     self.settings.reload_files()
+    #     mapping = {}
+    #     with open(test_path
+    #               + "/tests/clients_file_test.csv", "rb") as csv_file:
+    #         reader = csv.reader(csv_file)
+    #         for i, row in enumerate(reader):
+    #             if i == 0: continue
+    #             mapping[row[0]] = row[1]
+    #     self.assertEqual(mapping, self.settings.student_mapping)
 
 
 unittest.main()

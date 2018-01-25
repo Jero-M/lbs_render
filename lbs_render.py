@@ -1,26 +1,24 @@
 #!/usr/bin/python
 import os
-import sys
 import signal
 import subprocess
 import shlex
 
-import pygtk
 import gtk
 import appindicator
 
 
-class AppIndicatorExample:
+class AppIndicator:
     def __init__(self):
-        self.ind = appindicator.Indicator("lbs-render",
+        self.ind = appindicator.Indicator(
+                                    "lbs-render",
                                     "indicator-messages",
                                     appindicator.CATEGORY_APPLICATION_STATUS)
-        self.ind.set_status (appindicator.STATUS_ACTIVE)
-        self.ind.set_attention_icon ("indicator-messages-new")
+        self.ind.set_status(appindicator.STATUS_ACTIVE)
+        self.ind.set_attention_icon("indicator-messages-new")
         self.ind.set_icon(project_path + "/img/app_logo.png")
 
         self.menu = gtk.Menu()
-        
         open_control_panel = gtk.MenuItem("Control Panel")
         open_control_panel.connect("activate", open_ui)
         open_control_panel.show()
@@ -40,7 +38,7 @@ class AppIndicatorExample:
         quit_item.connect("activate", self.quit)
         quit_item.show()
         self.menu.append(quit_item)
-                    
+
         self.menu.show()
 
         self.ind.set_menu(self.menu)
@@ -61,12 +59,14 @@ def disable(*kwargs):
     if process.pid not in child_pids:
         child_pids.append(process.pid)
 
+
 def enable(*kwargs):
     enable_file = project_path + "/enable_host.py"
     cmd = enable_file
     process = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE)
     if process.pid not in child_pids:
         child_pids.append(process.pid)
+
 
 def open_ui(*kwargs):
     control_panel_file = project_path + "/control_panel.py"
@@ -75,6 +75,7 @@ def open_ui(*kwargs):
     if process.pid not in child_pids:
         child_pids.append(process.pid)
 
+
 def main():
     gtk.main()
     return 0
@@ -82,6 +83,6 @@ def main():
 if __name__ == "__main__":
     project_path = os.path.dirname(os.path.realpath(__file__))
     child_pids = []
-    #App Indicator
-    indicator = AppIndicatorExample()
+    # App Indicator
+    indicator = AppIndicator()
     main()
